@@ -148,14 +148,22 @@ Multiple files use **hardcoded URLs** instead of Laravel Wayfinder route functio
 
 <!-- After -->
 <script>
-  import { show } from '@/routes'; // or whatever the route is named
+  import { app } from '@/routes';
 </script>
-<Link href={show('app')}>Empezar</Link>
+<Link href={app()}>Empezar</Link>
 ```
 
-For CTASection's button, replace `<button onclick={() => window.location.href = '/app'}>` with `<Link href={...}>` for proper SPA navigation.
+For CTASection's button, replace `<button onclick={() => window.location.href = '/app'}>` with `<Link href={app()}>` for proper SPA navigation.
 
 **Priority:** Medium
+
+### Status
+✅ **COMPLETED** - All hardcoded URLs have been replaced with Wayfinder route functions:
+- `AppHeader.svelte`: `href="/"` → `href={home()}`
+- `MainLayout.svelte`: `href="/app"` → `href={app()}`
+- `HeroSection.svelte`: `href="/app"` → `href={app()}`
+- `CTASection.svelte`: `<button onclick>` → `<Link href={app()}>` for proper SPA navigation
+- Build verified successfully with `npm run build`
 
 ---
 

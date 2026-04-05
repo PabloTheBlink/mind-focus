@@ -1,6 +1,7 @@
 <script>
 import { Link } from '@inertiajs/svelte';
 import Logo from './Logo.svelte';
+import { app } from '@/routes';
 
 let { children } = $props();
 </script>
@@ -15,7 +16,7 @@ let { children } = $props();
 			<a href="#como-funciona" class="text-[14px] font-medium text-[#D1D5DB] no-underline hover:text-white">Cómo funciona</a>
 			<a href="#testimonios" class="text-[14px] font-medium text-[#D1D5DB] no-underline hover:text-white">Testimonios</a>
 			<Link
-				href="/app"
+				href={app()}
 				class="rounded bg-[#00D4FF] px-6 py-[10px] text-[14px] font-bold tracking-[0.5px] text-[#0A0A0A] transition-all hover:shadow-[0_0_30px_rgba(0,212,255,0.4)]"
 			>
 				Empezar

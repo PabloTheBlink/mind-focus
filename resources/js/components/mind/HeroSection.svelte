@@ -1,5 +1,6 @@
 <script>
 import { Link } from '@inertiajs/svelte';
+import { app } from '@/routes';
 
 let { subtitle = 'Tu mente no es el problema' } = $props();
 </script>
@@ -16,7 +17,7 @@ let { subtitle = 'Tu mente no es el problema' } = $props();
 		</p>
 		<div class="flex flex-wrap justify-center gap-5">
 			<Link
-				href="/app"
+				href={app()}
 				class="bg-[#00D4FF] px-12 py-[18px] text-[16px] font-bold tracking-[1px] uppercase text-[#0A0A0A] transition-all hover:shadow-[0_0_40px_rgba(0,212,255,0.4)]"
 			>
 				Empieza ahora
