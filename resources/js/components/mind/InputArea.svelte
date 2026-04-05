@@ -3,6 +3,18 @@ import { usePage } from '@inertiajs/svelte';
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 import { SvelteSet } from 'svelte/reactivity';
+import Briefcase from 'lucide-svelte/icons/briefcase';
+import User from 'lucide-svelte/icons/user';
+import Lightbulb from 'lucide-svelte/icons/lightbulb';
+import Heart from 'lucide-svelte/icons/heart';
+import DollarSign from 'lucide-svelte/icons/dollar-sign';
+import Book from 'lucide-svelte/icons/book';
+import Home from 'lucide-svelte/icons/home';
+import Users from 'lucide-svelte/icons/users';
+import Check from 'lucide-svelte/icons/check';
+import ChevronDown from 'lucide-svelte/icons/chevron-down';
+import Loader2 from 'lucide-svelte/icons/loader-2';
+import Circle from 'lucide-svelte/icons/circle';
 
 let { initialText = '', currentText = '', structuredData = null } = $props();
 const page = usePage();
@@ -471,10 +483,7 @@ Solo escribe."
 				<div class="mb-[18px] flex items-center justify-between">
 					<div class="flex items-center gap-2">
 						<div class="flex h-[22px] w-[22px] items-center justify-center rounded-lg bg-gradient-to-br from-[#00D4FF]/[0.2] to-[#00D4FF]/[0.05]">
-							<svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-								<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round" />
-								<path d="M9 11l3 3L22 4" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-							</svg>
+							<Check class="size-3" color="#00D4FF" stroke-width="2.5" />
 						</div>
 						<p class="text-[11px] font-semibold tracking-[2px] text-[#00D4FF] uppercase">Estructurado</p>
 					</div>
@@ -524,23 +533,23 @@ Solo escribe."
 										style="background: {getGroupBgColor(group.color)}; color: {getGroupTextColor(group.color)};"
 									>
 										{#if group.icon === 'briefcase'}
-											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+											<Briefcase class="size-3.5" />
 										{:else if group.icon === 'user'}
-											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+											<User class="size-3.5" />
 										{:else if group.icon === 'lightbulb'}
-											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/><path d="M9 21h6"/><path d="M10 17v4"/></svg>
+											<Lightbulb class="size-3.5" />
 										{:else if group.icon === 'heart'}
-											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+											<Heart class="size-3.5" />
 										{:else if group.icon === 'dollar-sign'}
-											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+											<DollarSign class="size-3.5" />
 										{:else if group.icon === 'book'}
-											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+											<Book class="size-3.5" />
 										{:else if group.icon === 'home'}
-											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+											<Home class="size-3.5" />
 										{:else if group.icon === 'users'}
-											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+											<Users class="size-3.5" />
 										{:else}
-											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+											<Circle class="size-3.5" />
 										{/if}
 									</div>
 									<h3 class="text-[14px] font-semibold text-white">{group.name}</h3>
@@ -548,13 +557,12 @@ Solo escribe."
 								<div class="flex items-center gap-2">
 									<span class="text-[10px] text-[#6B7280]">{countGroupTasks(group)} items</span>
 									<!-- Chevron -->
-									<svg
-										class="transition-transform duration-200"
-										class:rotate-180={expandedGroups.has(group.id)}
-										width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-									>
-										<polyline points="6 9 12 15 18 9" />
-									</svg>
+									<div class={expandedGroups.has(group.id) ? 'rotate-180' : ''}>
+										<ChevronDown
+											class="size-4 transition-transform duration-200"
+											color="#6B7280"
+										/>
+									</div>
 								</div>
 							</button>
 
@@ -655,10 +663,7 @@ Solo escribe."
 			disabled={isProcessing || !textareaValue}
 		>
 			{#if isProcessing}
-				<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-					<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-				</svg>
+				<Loader2 class="size-4 animate-spin" />
 				<span>Procesando...</span>
 			{:else}
 				<span>Estructurar</span>

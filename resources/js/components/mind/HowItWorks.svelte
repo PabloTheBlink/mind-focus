@@ -1,3 +1,9 @@
+<script>
+import Pen from 'lucide-svelte/icons/pen';
+import Clock from 'lucide-svelte/icons/clock';
+import Check from 'lucide-svelte/icons/check';
+</script>
+
 <section id="como-funciona" class="relative mx-auto max-w-[1200px] bg-gradient-to-[160deg] from-[#0E1015] via-[#131520] to-[#0F1118] px-5 py-[100px]">
 	<!-- Top line -->
 	<div class="absolute left-[5%] right-[5%] top-0 h-[1px] bg-gradient-to-r from-transparent via-[rgba(167,139,250,0.2)] to-transparent" />
@@ -16,9 +22,7 @@
 				<div class="absolute top-[-30px] left-[-10px] z-0 text-[96px] font-black leading-[1] text-[rgba(0,212,255,0.08)]">01</div>
 				<div class="relative z-1 p-[30px]">
 					<div class="mb-[25px] flex h-[50px] w-[50px] items-center justify-center rounded-xl bg-gradient-to-br from-[#00D4FF]/[0.15] to-[#00D4FF]/[0.03]">
-						<svg fill="none" height="24" viewBox="0 0 24 24" width="24">
-							<path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#00D4FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-						</svg>
+						<Pen class="size-6" color="#00D4FF" stroke-width="1.5" />
 					</div>
 					<h3 class="mb-[15px] text-[24px] font-bold text-white">Escribir</h3>
 					<p class="text-[16px] leading-[1.7] text-[#9CA3AF]">
@@ -32,9 +36,7 @@
 				<div class="absolute top-[-30px] left-[-10px] z-0 text-[96px] font-black leading-[1] text-[rgba(167,139,250,0.08)]">02</div>
 				<div class="relative z-1 p-[30px]">
 					<div class="mb-[25px] flex h-[50px] w-[50px] items-center justify-center rounded-xl bg-gradient-to-br from-[#A78BFA]/[0.15] to-[#A78BFA]/[0.03]">
-						<svg fill="none" height="24" viewBox="0 0 24 24" width="24">
-							<path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 14a1 1 0 1 1 1-1 1 1 0 0 1-1 1zm1-4.5a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0z" stroke="#A78BFA" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-						</svg>
+						<Clock class="size-6" color="#A78BFA" stroke-width="1.5" />
 					</div>
 					<h3 class="mb-[15px] text-[24px] font-bold text-white">Procesar</h3>
 					<p class="text-[16px] leading-[1.7] text-[#9CA3AF]">
@@ -48,9 +50,7 @@
 				<div class="absolute top-[-30px] left-[-10px] z-0 text-[96px] font-black leading-[1] text-[rgba(0,212,255,0.08)]">03</div>
 				<div class="relative z-1 p-[30px]">
 					<div class="mb-[25px] flex h-[50px] w-[50px] items-center justify-center rounded-xl bg-gradient-to-br from-[#00D4FF]/[0.15] to-[#00D4FF]/[0.03]">
-						<svg fill="none" height="24" viewBox="0 0 24 24" width="24">
-							<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M9 11l3 3L22 4" stroke="#00D4FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-						</svg>
+						<Check class="size-6" color="#00D4FF" stroke-width="1.5" />
 					</div>
 					<h3 class="mb-[15px] text-[24px] font-bold text-white">Actuar</h3>
 					<p class="text-[16px] leading-[1.7] text-[#9CA3AF]">

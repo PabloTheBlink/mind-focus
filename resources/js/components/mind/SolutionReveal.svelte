@@ -1,3 +1,7 @@
+<script>
+import ArrowRight from 'lucide-svelte/icons/arrow-right';
+</script>
+
 <section id="que-es" class="relative overflow-hidden bg-gradient-to-[160deg] from-[#12141F] via-[#151725] to-[#101220] px-5 py-[120px]">
 	<!-- Background glow -->
 	<div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,rgba(167,139,250,0.06)_0%,transparent_50%)]" />
@@ -31,9 +35,7 @@
 			<!-- Arrow / IA -->
 			<div class="flex flex-col items-center gap-[10px]">
 				<div class="flex h-[60px] w-[60px] items-center justify-center rounded-full bg-gradient-to-br from-[#00D4FF] to-[#A78BFA]">
-					<svg fill="none" height="24" viewBox="0 0 24 24" width="24">
-						<path d="M5 12h14M12 5l7 7-7 7" stroke="#0A0A0A" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" />
-					</svg>
+					<ArrowRight class="size-6" color="#0A0A0A" stroke-width="2.5" />
 				</div>
 				<p class="text-[11px] font-semibold tracking-[1px] text-[#00D4FF] uppercase">IA</p>
 			</div>
