@@ -21,6 +21,25 @@ class MindFocusController extends Controller
 
         return Inertia::render('AppScreen', [
             'text' => $structuredMarkdown,
+            'currentText' => $structuredMarkdown,
+            'structuredData' => $result['groups'] ?? [],
+        ]);
+    }
+
+    public function structureApi(Request $request, QwenMindFocusService $mindFocusService)
+    {
+        $text = $request->input('text', '');
+
+        if (empty(trim($text))) {
+            return response()->json([
+                'error' => 'El texto no puede estar vacío.',
+            ], 422);
+        }
+
+        $result = $mindFocusService->structure($text);
+
+        return response()->json([
+            'markdown' => $result['markdown'] ?? $text,
             'structuredData' => $result['groups'] ?? [],
         ]);
     }

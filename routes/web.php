@@ -10,6 +10,7 @@ Route::inertia('/', 'Welcome', [
 
 Route::inertia('app', 'AppScreen')->name('app');
 Route::post('app/structure', [MindFocusController::class, 'structure'])->name('app.structure');
+Route::post('api/structure', [MindFocusController::class, 'structureApi'])->name('api.structure');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');

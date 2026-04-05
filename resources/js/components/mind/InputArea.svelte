@@ -1,12 +1,14 @@
 <script>
-import { useForm, usePage } from '@inertiajs/svelte';
+import { usePage } from '@inertiajs/svelte';
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
+import { SvelteSet } from 'svelte/reactivity';
 
-let { initialText = '', structuredData = null } = $props();
+let { initialText = '', currentText = '', structuredData = null } = $props();
 const page = usePage();
 
 let isEditing = $state(false);
+let isProcessing = $state(false);
 
 // Configure marked for custom task lists
 marked.setOptions({
@@ -14,21 +16,283 @@ marked.setOptions({
 	gfm: true,
 });
 
-// Reactive structuredData from props or page props
-let currentStructuredData = $derived(structuredData ?? page.props.structuredData ?? null);
+// Internal structured data derived from the markdown text
+let parsedStructuredData = $derived.by(() => {
+	if (!textareaValue) {
+		return [];
+	}
+
+	return parseMarkdownToStructure(textareaValue);
+});
+
+// Local state for AJAX response
+let ajaxStructuredData = $state(null);
+
+// Use either AJAX structured data, passed structuredData, or parsed from text
+let currentStructuredData = $derived(
+	ajaxStructuredData
+		? ajaxStructuredData
+		: parsedStructuredData.length > 0
+			? parsedStructuredData
+			: (structuredData ?? page.props.structuredData ?? [])
+);
+
+function parseMarkdownToStructure(md) {
+	const lines = md.split('\n');
+	const groups = [];
+	let currentGroup = null;
+	let currentSubgroup = null;
+	let currentItem = null;
+
+	let groupId = 1;
+	let subgroupId = 1;
+	let itemId = 1;
+
+	const iconByKeywords = {
+		trabajo: 'briefcase',
+		proyecto: 'briefcase',
+		personal: 'user',
+		salud: 'heart',
+		bienestar: 'heart',
+		idea: 'lightbulb',
+		creatividad: 'lightbulb',
+		dinero: 'dollar-sign',
+		finanzas: 'dollar-sign',
+		estudio: 'book',
+		aprendizaje: 'book',
+		hogar: 'home',
+		casa: 'home',
+		equipo: 'users',
+		familia: 'users',
+	};
+
+	const colorByIcon = {
+		briefcase: 'cyan',
+		user: 'green',
+		heart: 'pink',
+		lightbulb: 'purple',
+		'dollar-sign': 'orange',
+		book: 'blue',
+		home: 'blue',
+		users: 'cyan',
+	};
+
+	for (let i = 0; i < lines.length; i++) {
+		const line = lines[i].trim();
+
+		if (!line) {
+			continue;
+		}
+
+		// Group: # Name
+		if (line.startsWith('# ')) {
+			const name = line.substring(2).trim();
+
+			let icon = 'briefcase';
+			for (const [kw, ic] of Object.entries(iconByKeywords)) {
+				if (name.toLowerCase().includes(kw)) {
+					icon = ic;
+					break;
+				}
+			}
+
+			currentGroup = {
+				id: groupId++,
+				name,
+				icon,
+				color: colorByIcon[icon] || 'cyan',
+				subgroups: [],
+			};
+			groups.push(currentGroup);
+			currentSubgroup = null;
+			currentItem = null;
+		}
+
+		// Subgroup: ## Name
+		else if (line.startsWith('## ')) {
+			if (!currentGroup) {
+				currentGroup = {
+					id: groupId++,
+					name: 'General',
+					icon: 'briefcase',
+					color: 'cyan',
+					subgroups: [],
+				};
+				groups.push(currentGroup);
+			}
+
+			const name = line.substring(3).trim();
+			currentSubgroup = {
+				id: subgroupId++,
+				name,
+				type: name.toLowerCase().includes('tarea') ? 'tasks' : 'notes',
+				items: [],
+			};
+			currentGroup.subgroups.push(currentSubgroup);
+			currentItem = null;
+		}
+
+		// Task: - [ ] Title (PRIORITY) [TIME]
+		else if (line.startsWith('- [ ] ')) {
+			if (!currentSubgroup) {
+				if (!currentGroup) {
+					currentGroup = {
+						id: groupId++,
+						name: 'General',
+						icon: 'briefcase',
+						color: 'cyan',
+						subgroups: [],
+					};
+					groups.push(currentGroup);
+				}
+
+				currentSubgroup = {
+					id: subgroupId++,
+					name: 'Tareas',
+					type: 'tasks',
+					items: [],
+				};
+				currentGroup.subgroups.push(currentSubgroup);
+			}
+
+			let title = line.substring(6).trim();
+			let priority = 'normal';
+			let estimatedTime = '';
+
+			// Extract Priority
+			if (title.includes('(URGENTE)')) {
+				priority = 'urgente';
+				title = title.replace('(URGENTE)', '').trim();
+			} else if (title.includes('(IMPORTANTE)')) {
+				priority = 'importante';
+				title = title.replace('(IMPORTANTE)', '').trim();
+			} else if (title.includes('(BAJA)')) {
+				priority = 'baja';
+				title = title.replace('(BAJA)', '').trim();
+			}
+
+			// Extract Time
+			const timeMatch = title.match(/\[(.*?)\]/);
+			if (timeMatch) {
+				estimatedTime = timeMatch[1];
+				title = title.replace(`[${estimatedTime}]`, '').trim();
+			}
+
+			currentItem = {
+				id: itemId++,
+				title,
+				priority,
+				isPrimary: false, // We'll set primary later if none
+				estimatedTime,
+				description: '',
+			};
+			currentSubgroup.items.push(currentItem);
+		}
+
+		// Note: - Title #tags
+		else if (line.startsWith('- ')) {
+			if (!currentSubgroup) {
+				if (!currentGroup) {
+					currentGroup = {
+						id: groupId++,
+						name: 'General',
+						icon: 'briefcase',
+						color: 'cyan',
+						subgroups: [],
+					};
+					groups.push(currentGroup);
+				}
+
+				currentSubgroup = {
+					id: subgroupId++,
+					name: 'Notas e ideas',
+					type: 'notes',
+					items: [],
+				};
+				currentGroup.subgroups.push(currentSubgroup);
+			}
+
+			let title = line.substring(2).trim();
+			const tags = [];
+			const tagMatches = title.match(/#(\w+)/g);
+
+			if (tagMatches) {
+				tagMatches.forEach((tag) => {
+					tags.push(tag.substring(1));
+					title = title.replace(tag, '').trim();
+				});
+			}
+
+			currentItem = {
+				id: itemId++,
+				title,
+				tags,
+				description: '',
+			};
+			currentSubgroup.items.push(currentItem);
+		}
+
+		// Description: > text
+		else if (line.startsWith('>') || line.startsWith('  >')) {
+			if (currentItem) {
+				const desc = line.replace(/^\s*>\s*/, '').trim();
+				currentItem.description += (currentItem.description ? '\n' : '') + desc;
+			}
+		}
+	}
+
+	// Post-process to ensure at least one primary task if needed
+	let hasPrimary = false;
+
+	for (const g of groups) {
+		for (const sg of g.subgroups) {
+			for (const it of sg.items) {
+				if (it.isPrimary) {
+					hasPrimary = true;
+				}
+			}
+		}
+	}
+
+	if (!hasPrimary && groups.length > 0) {
+		for (const g of groups) {
+			for (const sg of g.subgroups) {
+				if (sg.type === 'tasks' && sg.items.length > 0) {
+					// Make the first urgent or first task primary
+					const urgent = sg.items.find((it) => it.priority === 'urgente');
+
+					if (urgent) {
+						urgent.isPrimary = true;
+					} else {
+						sg.items[0].isPrimary = true;
+					}
+
+					hasPrimary = true;
+					break;
+				}
+			}
+
+			if (hasPrimary) {
+				break;
+			}
+		}
+	}
+
+	return groups;
+}
 
 // Markdown rendering
 let renderedMarkdown = $derived.by(() => {
-	if (!form.text) {
+	if (!textareaValue) {
 		return '';
 	}
 
-	const rawHtml = marked.parse(form.text);
+	const rawHtml = marked.parse(textareaValue);
 	return DOMPurify.sanitize(rawHtml);
 });
 
 // Track which groups are expanded (all expanded by default)
-let expandedGroups = $state(new Set());
+let expandedGroups = new SvelteSet();
 
 function toggleGroup(groupId) {
 	if (expandedGroups.has(groupId)) {
@@ -36,35 +300,67 @@ function toggleGroup(groupId) {
 	} else {
 		expandedGroups.add(groupId);
 	}
-	expandedGroups = new Set(expandedGroups);
 }
 
-const form = useForm({
-	text: initialText,
-});
+let textareaValue = $state(initialText || currentText || '');
 
 $effect(() => {
 	if (initialText) {
-		form.text = initialText;
+		textareaValue = initialText;
 	}
 });
 
-function handleStructure() {
-	if (!form.text || form.processing) return;
+$effect(() => {
+	if (currentText) {
+		textareaValue = currentText;
+	}
+});
 
-	form.post('/app/structure', {
-		preserveState: true,
-		preserveScroll: true,
-	});
+async function handleStructure() {
+	if (!textareaValue || isProcessing) {
+		return;
+	}
+
+	isProcessing = true;
+
+	try {
+		const response = await fetch('/api/structure', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '',
+				'X-Requested-With': 'XMLHttpRequest',
+			},
+			body: JSON.stringify({ text: textareaValue }),
+		});
+
+		if (!response.ok) {
+			const error = await response.json();
+			console.error('Error:', error.error);
+			return;
+		}
+
+		const data = await response.json();
+
+		// Update the textarea with the structured markdown
+		textareaValue = data.markdown;
+
+		// Update local structured data state
+		ajaxStructuredData = data.structuredData;
+	} catch (error) {
+		console.error('Failed to structure text:', error);
+	} finally {
+		isProcessing = false;
+	}
 }
 
 function handleReset() {
-	form.reset('text');
+	textareaValue = '';
 }
 
 function handleSave() {
 	// Placeholder for save functionality
-	console.log('Saving...', form.text);
+	console.log('Saving...', textareaValue);
 }
 
 const groupColorMap = {
@@ -146,9 +442,9 @@ function findPrimaryTask(groups) {
 	<div class="grid min-h-[500px] flex-1 grid-cols-2">
 		<!-- Left: Input -->
 		<div class="border-r border-white/[0.04] bg-black/10 p-[25px]">
-			{#if isEditing || !form.text}
+			{#if isEditing || !textareaValue}
 				<textarea
-					bind:value={form.text}
+					bind:value={textareaValue}
 					onblur={() => (isEditing = false)}
 					placeholder="Escribe aquí todo lo que tienes en la cabeza...
 
@@ -157,7 +453,7 @@ Solo escribe."
 					class="h-full min-h-[380px] w-full rounded-lg border border-dashed border-white/[0.08] bg-transparent px-5 py-[20px] text-[14px] leading-[1.9] text-[#B0B8C4] outline-none resize-none font-sans"
 				></textarea>
 			{:else}
-				<div 
+				<div
 					role="button"
 					tabindex="0"
 					onclick={() => (isEditing = true)}
@@ -354,14 +650,18 @@ Solo escribe."
 		<p class="text-[10px] italic text-[#4B5563]">Escribe a la izquierda. Estructura cuando quieras.</p>
 		<button
 			type="button"
-			class="ml-[10px] rounded bg-gradient-to-r from-[#00D4FF] to-[#00B8E6] px-9 py-[10px] text-[13px] font-bold tracking-[1px] uppercase text-[#0A0A0A] shadow-[0_0_25px_rgba(0,212,255,0.2)] transition-all hover:shadow-[0_0_35px_rgba(0,212,255,0.4)]"
+			class="ml-[10px] flex items-center gap-2 rounded bg-gradient-to-r from-[#00D4FF] to-[#00B8E6] px-9 py-[10px] text-[13px] font-bold tracking-[1px] uppercase text-[#0A0A0A] shadow-[0_0_25px_rgba(0,212,255,0.2)] transition-all hover:shadow-[0_0_35px_rgba(0,212,255,0.4)] disabled:cursor-not-allowed disabled:opacity-50"
 			onclick={handleStructure}
-			disabled={form.processing || !form.text}
+			disabled={isProcessing || !textareaValue}
 		>
-			{#if form.processing}
-				Procesando...
+			{#if isProcessing}
+				<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+					<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+				</svg>
+				<span>Procesando...</span>
 			{:else}
-				Estructurar
+				<span>Estructurar</span>
 			{/if}
 		</button>
 	</div>
