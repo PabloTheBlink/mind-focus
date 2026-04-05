@@ -31,14 +31,12 @@ let {
 	currentText = '',
 	structuredData = null,
 } = $props();
-
-let initialText = $derived(text === '' ? '' : text);
 </script>
 
 <AppLayout>
 	<AppHeader />
 	<div class="relative z-1 mx-auto w-full">
-		<InputArea {initialText} {currentText} {structuredData} />
+		<InputArea initialText={text} {currentText} {structuredData} />
 	</div>
 	<AppFooter />
 </AppLayout>

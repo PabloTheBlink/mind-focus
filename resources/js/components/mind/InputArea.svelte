@@ -1,5 +1,4 @@
 <script>
-import { usePage } from '@inertiajs/svelte';
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 import { SvelteSet } from 'svelte/reactivity';
@@ -17,7 +16,6 @@ import Loader2 from 'lucide-svelte/icons/loader-2';
 import Circle from 'lucide-svelte/icons/circle';
 
 let { initialText = '', currentText = '', structuredData = null } = $props();
-const page = usePage();
 
 let isEditing = $state(false);
 let isProcessing = $state(false);
@@ -46,7 +44,7 @@ let currentStructuredData = $derived(
 		? ajaxStructuredData
 		: parsedStructuredData.length > 0
 			? parsedStructuredData
-			: (structuredData ?? page.props.structuredData ?? [])
+			: (structuredData ?? [])
 );
 
 function parseMarkdownToStructure(md) {

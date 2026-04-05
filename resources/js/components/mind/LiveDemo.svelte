@@ -28,12 +28,10 @@ let {
 	currentText = '',
 	structuredData = null,
 } = $props();
-
-let initialText = $derived(text === '' ? '' : text);
 </script>
 
 <section id="demo" class="relative bg-gradient-to-[160deg] from-[#0D0E15] via-[#111320] to-[#0E0F18] px-5 py-[100px]">
 	<div class="relative z-1 mx-auto w-full">
-		<InputArea {initialText} {currentText} {structuredData} />
+		<InputArea initialText={text} {currentText} {structuredData} />
 	</div>
 </section>
