@@ -9,7 +9,7 @@ import HowItWorks from '@/components/mind/HowItWorks.svelte';
 import FeaturesGrid from '@/components/mind/FeaturesGrid.svelte';
 import Testimonials from '@/components/mind/Testimonials.svelte';
 import CTASection from '@/components/mind/CTASection.svelte';
-import Footer from '@/components/mind/Footer.svelte';
+import LandingFooter from '@/components/mind/LandingFooter.svelte';
 </script>
 
 <MainLayout>
@@ -22,5 +22,5 @@ import Footer from '@/components/mind/Footer.svelte';
 	<FeaturesGrid />
 	<Testimonials />
 	<CTASection />
-	<Footer />
+	<LandingFooter />
 </MainLayout>
