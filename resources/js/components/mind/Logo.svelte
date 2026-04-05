@@ -1,5 +1,5 @@
 <script>
-let { size = 'default' } = $props();
+let { size = 'default', inline = false } = $props();
 
 const sizes = {
 	sm: { mind: 22, focus: 16 },
@@ -11,7 +11,7 @@ const sizes = {
 const current = $derived(sizes[size] || sizes.default);
 </script>
 
-<div class="flex flex-col items-center gap-1 p-5">
+{#if inline}
 	<div class="flex items-baseline gap-2">
 		<span
 			class="text-[#00D4FF]"
@@ -26,5 +26,22 @@ const current = $derived(sizes[size] || sizes.default);
 			FOCUS
 		</span>
 	</div>
-	<span class="text-[#9CA3AF] text-[12px] tracking-[3px] uppercase">desbloquea tu mente</span>
-</div>
+{:else}
+	<div class="flex flex-col items-center gap-1 p-5">
+		<div class="flex items-baseline gap-2">
+			<span
+				class="text-[#00D4FF]"
+				style="font-family: 'Brush Script MT', 'Great Vibes', cursive; font-size: {current.mind}px; font-weight: 400; letter-spacing: 1px;"
+			>
+				MIND
+			</span>
+			<span
+				class="text-white"
+				style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: {current.focus}px; font-weight: 800; letter-spacing: 2px;"
+			>
+				FOCUS
+			</span>
+		</div>
+		<span class="text-[#9CA3AF] text-[12px] tracking-[3px] uppercase">desbloquea tu mente</span>
+	</div>
+{/if}

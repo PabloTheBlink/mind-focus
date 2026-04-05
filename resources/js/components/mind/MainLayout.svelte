@@ -1,5 +1,6 @@
 <script>
 import { Link } from '@inertiajs/svelte';
+import Logo from './Logo.svelte';
 
 let { children } = $props();
 </script>
@@ -7,10 +8,7 @@ let { children } = $props();
 <div class="relative min-h-screen overflow-x-hidden bg-[#0A0A0A] font-sans text-white">
 	<!-- Sticky nav -->
 	<header class="sticky top-0 z-[1000] flex items-center justify-between border-b border-white/[0.06] bg-[rgba(10,10,10,0.95)] px-10 py-[25px] backdrop-blur-[10px]">
-		<div class="flex items-baseline gap-2">
-			<span class="text-[32px] text-[#00D4FF]" style="font-family: 'Brush Script MT', 'Great Vibes', cursive;">MIND</span>
-			<span class="text-[24px] font-extrabold text-white" style="font-family: -apple-system, BlinkMacSystemFont, sans-serif;">FOCUS</span>
-		</div>
+		<Logo size="xl" inline />
 		<div class="flex items-center gap-[30px]">
 			<a href="#que-es" class="text-[14px] font-medium text-[#D1D5DB] no-underline hover:text-white">Qué es</a>
 			<a href="#demo" class="text-[14px] font-medium text-[#D1D5DB] no-underline hover:text-white">Demo</a>

@@ -1,5 +1,6 @@
 <script>
 import { Link } from '@inertiajs/svelte';
+import Logo from './Logo.svelte';
 </script>
 
 <footer class="bg-gradient-to-b from-[#060608] to-[#040405] px-5 pt-[60px] pb-[40px] border-t border-white/[0.04]">
@@ -7,9 +8,8 @@ import { Link } from '@inertiajs/svelte';
 		<div class="mb-[50px] flex flex-wrap justify-between gap-10">
 			<!-- Brand -->
 			<div class="min-w-[250px] flex-1">
-				<div class="mb-[15px] flex items-baseline gap-[6px]">
-					<span class="text-[28px] text-[#00D4FF]" style="font-family: 'Brush Script MT', 'Great Vibes', cursive;">MIND</span>
-					<span class="text-[22px] font-extrabold text-white" style="font-family: -apple-system, BlinkMacSystemFont, sans-serif;">FOCUS</span>
+				<div class="mb-[15px]">
+					<Logo size="lg" inline />
 				</div>
 				<p class="max-w-[300px] text-[14px] leading-[1.6] text-[#6B7280]">
 					Desbloquea tu mente. Elimina el ruido. Empieza a actuar.

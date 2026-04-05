@@ -1,12 +1,10 @@
 <script>
 import { Link } from '@inertiajs/svelte';
+import Logo from './Logo.svelte';
 </script>
 
 <header class="sticky top-0 z-[100] flex items-center justify-between border-b border-white/[0.05] bg-[rgba(8,10,16,0.8)] px-10 py-[18px] backdrop-blur-[12px]">
-	<div class="flex items-baseline gap-2">
-		<span class="text-[28px] text-[#00D4FF]" style="font-family: 'Brush Script MT', 'Great Vibes', cursive;">MIND</span>
-		<span class="text-[20px] font-extrabold tracking-[1px] text-white" style="font-family: -apple-system, BlinkMacSystemFont, sans-serif;">FOCUS</span>
-	</div>
+	<Logo size="lg" inline />
 	<div class="flex items-center gap-[25px]">
 		<Link
 			href="/"
