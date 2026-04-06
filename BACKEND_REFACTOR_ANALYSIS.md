@@ -19,7 +19,7 @@ The backend codebase is relatively small and well-structured, but several refact
 | **High** | `app/Services/QwenMindFocusService.php` | Refactor `parseResponse()` -- reduce nesting, deduplicate logic | Medium | ✅ Done |
 | **Medium** | `app/Http/Controllers/MindFocusController.php` | Add return type declarations | Low | ✅ Done |
 | **Medium** | `app/Services/QwenMindFocusService.php` | Replace redundant icon map with enum or validation | Low | ✅ Done |
-| **Medium** | `app/Http/Controllers/Settings/SecurityController.php` | Simplify nested ternary in `middleware()` | Low | Pending |
+| **Medium** | `app/Http/Controllers/Settings/SecurityController.php` | Simplify nested ternary in `middleware()` | Low | ✅ Done |
 | **Low** | `app/Http/Controllers/MindFocusController.php` | Extract validation to Form Request; use translations | Low | Pending |
 | **Low** | `config/services.php` | Add `qwen` configuration section | Low | Pending |
 | **Low** | `tests/Pest.php` | Uncomment `RefreshDatabase` or document why disabled | Low | ✅ Done |
@@ -316,11 +316,11 @@ public function messages(): array
 
 ---
 
-### 🟡 MEDIUM: SecurityController nested ternary
+### 🟡 MEDIUM: SecurityController nested ternary ✅ RESOLVED
 
 **File:** `app/Http/Controllers/Settings/SecurityController.php`
 
-**Current:**
+**Was:**
 ```php
 public static function middleware(): array
 {
@@ -331,7 +331,7 @@ public static function middleware(): array
 }
 ```
 
-**Recommended Fix:**
+**Now:**
 ```php
 public static function middleware(): array
 {
@@ -346,6 +346,11 @@ public static function middleware(): array
     return [new Middleware('password.confirm', only: ['edit'])];
 }
 ```
+
+**Benefits:**
+- Improved readability with early returns.
+- Easier to understand and maintain.
+- Follows common Laravel conventions.
 
 ---
 
@@ -445,8 +450,9 @@ function something(): string
 4. ~~**Fix configuration issues** (move `env()` calls to config files)~~ -- ✅ prevents production bugs
 5. ~~**Extract system prompt**~~ -- ✅ makes service more maintainable
 6. ~~**Refactor `parseResponse()`**~~ -- ✅ reduces complexity and duplication
-7. **Add translations** -- prepares for internationalization
-8. **Consider background job** -- for production scalability
+7. ~~**Simplify SecurityController ternary**~~ -- ✅ improves readability
+8. **Add translations** -- prepares for internationalization
+9. **Consider background job** -- for production scalability
 
 ---
 
@@ -457,15 +463,15 @@ function something(): string
 | ~~Config fixes~~ | ~~30 min~~ | Low | ✅ Done |
 | ~~Return types~~ | ~~15 min~~ | Low | ✅ Done |
 | ~~Extract system prompt~~ | ~~1 hour~~ | Low | ✅ Done |
-| Refactor parseResponse | 2 hours | Medium | ✅ Done |
+| ~~Refactor parseResponse~~ | ~~2 hours~~ | Medium | ✅ Done |
 | ~~Icon map cleanup~~ | ~~30 min~~ | Low | ✅ Done |
+| ~~SecurityController ternary~~ | ~~15 min~~ | Low | ✅ Done |
 | Translation setup | 1 hour | Low | Pending |
-| ~~Test fixes~~ | ~~30 min~~ | Low | ✅ Done |
 | Background job (optional) | 3 hours | Medium | Pending |
 
-**Total (core fixes):** ~3.5 hours remaining
-**Total (with optional):** ~6.5 hours remaining
-**Completed so far:** ~2 hours 15 min
+**Total (core fixes):** ~1 hour remaining
+**Total (with optional):** ~4 hours remaining
+**Completed so far:** ~2 hours 30 min
 
 ---
 
