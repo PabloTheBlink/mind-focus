@@ -15,7 +15,7 @@ The backend codebase is relatively small and well-structured, but several refact
 
 | Priority | File | Issue | Effort | Status |
 |----------|------|-------|--------|--------|
-| **High** | `app/Services/QwenMindFocusService.php` | Move `env()` call to config; extract system prompt | Medium | Partially Done (config fixed, prompt pending) |
+| **High** | `app/Services/QwenMindFocusService.php` | Move `env()` call to config; extract system prompt | Medium | ✅ Done |
 | **High** | `app/Services/QwenMindFocusService.php` | Refactor `parseResponse()` -- reduce nesting, deduplicate logic | Medium | Pending |
 | **Medium** | `app/Http/Controllers/MindFocusController.php` | Add return type declarations | Low | ✅ Done |
 | **Medium** | `app/Services/QwenMindFocusService.php` | Replace redundant icon map with enum or validation | Low | ✅ Done |
@@ -57,41 +57,41 @@ $this->timeout = config('services.qwen.timeout', 120);
 
 ---
 
-#### 2. Massive hardcoded system prompt (~150 lines)
+#### 2. Massive hardcoded system prompt (~150 lines) ✅ RESOLVED
 
-**Current:**
-The `getSystemPrompt()` method returns a 150+ line Spanish-language prompt embedded as a heredoc.
+**Was:**
+The `getSystemPrompt()` method returned a 150+ line Spanish-language prompt embedded as a heredoc.
 
-**Problems:**
-- Makes the class harder to read and maintain.
-- Not reusable across different contexts.
-- Difficult to version or A/B test different prompts.
-
-**Recommended Fix:**
-
-Option A -- Config file:
-```php
-// config/mindfocus.php
-return [
-    'system_prompt' => <<<PROMPT
-        Eres un asistente experto en organización de ideas...
-        [... rest of prompt ...]
-    PROMPT,
-];
-```
-
-Option B -- Resource file (preferred):
+**Now:**
+Extracted to external resource file:
 ```
 resources/prompts/mindfocus_system_prompt.md
 ```
 
-Load in service:
+Loaded in service:
 ```php
 private function getSystemPrompt(): string
 {
-    return file_get_contents(resource_path('prompts/mindfocus_system_prompt.md'));
+    $promptPath = resource_path('prompts/mindfocus_system_prompt.md');
+
+    if (! file_exists($promptPath)) {
+        throw new \RuntimeException("System prompt file not found: {$promptPath}");
+    }
+
+    $prompt = file_get_contents($promptPath);
+
+    if ($prompt === false) {
+        throw new \RuntimeException("Failed to read system prompt file: {$promptPath}");
+    }
+
+    return $prompt;
 }
 ```
+
+**Benefits:**
+- Makes the service class more readable and maintainable.
+- Easy to version control and A/B test different prompts.
+- Separation of concerns: code logic vs. prompt content.
 
 ---
 
@@ -443,7 +443,7 @@ function something(): string
 2. ~~**Fix test configuration**~~ -- ✅ ensures reliable test suite
 3. ~~**Replace icon map**~~ -- ✅ simplifies validation logic
 4. ~~**Fix configuration issues** (move `env()` calls to config files)~~ -- ✅ prevents production bugs
-5. **Extract system prompt** -- makes service more maintainable
+5. ~~**Extract system prompt**~~ -- ✅ makes service more maintainable
 6. **Refactor `parseResponse()`** -- reduces complexity and duplication
 7. **Add translations** -- prepares for internationalization
 8. **Consider background job** -- for production scalability
@@ -456,16 +456,16 @@ function something(): string
 |------|--------|------|--------|
 | ~~Config fixes~~ | ~~30 min~~ | Low | ✅ Done |
 | ~~Return types~~ | ~~15 min~~ | Low | ✅ Done |
-| Extract system prompt | 1 hour | Low | Pending |
+| ~~Extract system prompt~~ | ~~1 hour~~ | Low | ✅ Done |
 | Refactor parseResponse | 2 hours | Medium | Pending |
 | ~~Icon map cleanup~~ | ~~30 min~~ | Low | ✅ Done |
 | Translation setup | 1 hour | Low | Pending |
 | ~~Test fixes~~ | ~~30 min~~ | Low | ✅ Done |
 | Background job (optional) | 3 hours | Medium | Pending |
 
-**Total (core fixes):** ~4.5 hours remaining
-**Total (with optional):** ~7.5 hours remaining
-**Completed so far:** ~1 hour 15 min
+**Total (core fixes):** ~3.5 hours remaining
+**Total (with optional):** ~6.5 hours remaining
+**Completed so far:** ~2 hours 15 min
 
 ---
 
