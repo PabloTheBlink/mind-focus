@@ -13,7 +13,7 @@ import Logo from './Logo.svelte';
 			class="flex items-center gap-[5px] text-[13px] font-medium text-[#6B7280] no-underline hover:text-white"
 		>
 			Volver a la web
-			<ArrowLeft class="size-3.5" />
+			<ArrowLeft class="size-3.5" aria-hidden="true" />
 		</Link>
 	</div>
 </header>

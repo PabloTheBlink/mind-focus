@@ -35,7 +35,7 @@ import ArrowRight from 'lucide-svelte/icons/arrow-right';
 			<!-- Arrow / IA -->
 			<div class="flex flex-col items-center gap-[10px]">
 				<div class="flex h-[60px] w-[60px] items-center justify-center rounded-full bg-gradient-to-br from-[#00D4FF] to-[#A78BFA]">
-					<ArrowRight class="size-6" color="#0A0A0A" stroke-width="2.5" />
+					<ArrowRight class="size-6" color="#0A0A0A" stroke-width="2.5" aria-hidden="true" />
 				</div>
 				<p class="text-[11px] font-semibold tracking-[1px] text-[#00D4FF] uppercase">IA</p>
 			</div>

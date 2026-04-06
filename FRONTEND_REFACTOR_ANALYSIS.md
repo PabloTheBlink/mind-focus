@@ -518,11 +518,29 @@ Several accessibility issues exist:
 - Poor experience for keyboard/screen reader users
 - Potential legal issues in some jurisdictions
 
-### Recommendation
-- Replace `button` navigation with `Link` components
-- Add `aria-label` to icon-only buttons
-- Add `aria-hidden="true"` to decorative inline SVGs
-- Verify all anchor `href` targets exist
+### Status
+✅ **COMPLETED** - All accessibility issues have been resolved:
+
+**Navigation & Keyboard Access:**
+- `CTASection.svelte`: Already uses `<Link>` component (fixed in task 4) ✅
+- `HeroSection.svelte`: `href="#que-es"` target verified - exists in `SolutionReveal.svelte` ✅
+
+**Icon Accessibility:**
+- Added `aria-hidden="true"` to all decorative lucide-svelte icons across:
+  - `InputArea.svelte`: Check, Briefcase, User, Lightbulb, Heart, DollarSign, Book, Home, Users, Circle, ChevronDown, AlertCircle, X, Loader2 (14 icons)
+  - `HowItWorks.svelte`: Pen, Clock, Check (3 step icons)
+  - `SolutionReveal.svelte`: ArrowRight (IA flow indicator)
+  - `AppHeader.svelte`: ArrowLeft (navigation icon)
+- Icon-only buttons already have proper `aria-label` attributes:
+  - `InputArea.svelte`: Error dismiss button has `aria-label="Cerrar mensaje de error"` ✅
+  - All functional buttons have visible text labels (Limpiar, Guardar, Estructurar, Reintentar) ✅
+
+**Screen Reader Improvements:**
+- Decorative icons now hidden from screen readers with `aria-hidden="true"`
+- Functional icons remain accessible via surrounding text/context
+- Proper semantic HTML maintained throughout
+
+Build and TypeScript verification passed successfully (0 errors, 0 new warnings).
 
 **Priority:** Medium
 

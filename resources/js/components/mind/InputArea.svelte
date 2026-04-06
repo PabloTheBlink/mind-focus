@@ -541,7 +541,7 @@ Solo escribe."
 				<div class="mb-[18px] flex items-center justify-between">
 					<div class="flex items-center gap-2">
 						<div class="flex h-[22px] w-[22px] items-center justify-center rounded-lg bg-gradient-to-br from-[#00D4FF]/[0.2] to-[#00D4FF]/[0.05]">
-							<Check class="size-3" color="#00D4FF" stroke-width="2.5" />
+							<Check class="size-3" color="#00D4FF" stroke-width="2.5" aria-hidden="true" />
 						</div>
 						<p class="text-[11px] font-semibold tracking-[2px] text-[#00D4FF] uppercase">Estructurado</p>
 					</div>
@@ -591,23 +591,23 @@ Solo escribe."
 										style="background: {getGroupBgColor(group.color)}; color: {getGroupTextColor(group.color)};"
 									>
 										{#if group.icon === 'briefcase'}
-											<Briefcase class="size-3.5" />
+											<Briefcase class="size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'user'}
-											<User class="size-3.5" />
+											<User class="size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'lightbulb'}
-											<Lightbulb class="size-3.5" />
+											<Lightbulb class="size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'heart'}
-											<Heart class="size-3.5" />
+											<Heart class="size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'dollar-sign'}
-											<DollarSign class="size-3.5" />
+											<DollarSign class="size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'book'}
-											<Book class="size-3.5" />
+											<Book class="size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'home'}
-											<Home class="size-3.5" />
+											<Home class="size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'users'}
-											<Users class="size-3.5" />
+											<Users class="size-3.5" aria-hidden="true" />
 										{:else}
-											<Circle class="size-3.5" />
+											<Circle class="size-3.5" aria-hidden="true" />
 										{/if}
 									</div>
 									<h3 class="text-[14px] font-semibold text-white">{group.name}</h3>
@@ -619,6 +619,7 @@ Solo escribe."
 										<ChevronDown
 											class="size-4 transition-transform duration-200"
 											color="#6B7280"
+											aria-hidden="true"
 										/>
 									</div>
 								</div>
@@ -716,7 +717,7 @@ Solo escribe."
 		<!-- Error banner -->
 		{#if apiError}
 			<div class="flex items-start gap-3 rounded-lg border border-red-500/20 bg-red-500/10 p-3">
-				<AlertCircle class="mt-0.5 size-4 shrink-0 text-red-400" />
+				<AlertCircle class="mt-0.5 size-4 shrink-0 text-red-400" aria-hidden="true" />
 				<div class="flex-1">
 					<p class="mb-2 text-[13px] text-red-200">{apiError}</p>
 					<button
@@ -733,7 +734,7 @@ Solo escribe."
 					onclick={dismissError}
 					aria-label="Cerrar mensaje de error"
 				>
-					<X class="size-4" />
+					<X class="size-4" aria-hidden="true" />
 				</button>
 			</div>
 		{/if}
@@ -747,7 +748,7 @@ Solo escribe."
 				disabled={isProcessing || !textareaValue}
 			>
 				{#if isProcessing}
-					<Loader2 class="size-4 animate-spin" />
+					<Loader2 class="size-4 animate-spin" aria-hidden="true" />
 					<span>Procesando...</span>
 				{:else}
 					<span>Estructurar</span>

@@ -22,7 +22,7 @@ import Pen from 'lucide-svelte/icons/pen';
 				<div class="absolute top-[-30px] left-[-10px] z-0 text-[96px] font-black leading-[1] text-[rgba(0,212,255,0.08)]">01</div>
 				<div class="relative z-1 p-[30px]">
 					<div class="mb-[25px] flex h-[50px] w-[50px] items-center justify-center rounded-xl bg-gradient-to-br from-[#00D4FF]/[0.15] to-[#00D4FF]/[0.03]">
-						<Pen class="size-6" color="#00D4FF" stroke-width="1.5" />
+						<Pen class="size-6" color="#00D4FF" stroke-width="1.5" aria-hidden="true" />
 					</div>
 					<h3 class="mb-[15px] text-[24px] font-bold text-white">Escribir</h3>
 					<p class="text-[16px] leading-[1.7] text-[#9CA3AF]">
@@ -36,7 +36,7 @@ import Pen from 'lucide-svelte/icons/pen';
 				<div class="absolute top-[-30px] left-[-10px] z-0 text-[96px] font-black leading-[1] text-[rgba(167,139,250,0.08)]">02</div>
 				<div class="relative z-1 p-[30px]">
 					<div class="mb-[25px] flex h-[50px] w-[50px] items-center justify-center rounded-xl bg-gradient-to-br from-[#A78BFA]/[0.15] to-[#A78BFA]/[0.03]">
-						<Clock class="size-6" color="#A78BFA" stroke-width="1.5" />
+						<Clock class="size-6" color="#A78BFA" stroke-width="1.5" aria-hidden="true" />
 					</div>
 					<h3 class="mb-[15px] text-[24px] font-bold text-white">Procesar</h3>
 					<p class="text-[16px] leading-[1.7] text-[#9CA3AF]">
@@ -50,7 +50,7 @@ import Pen from 'lucide-svelte/icons/pen';
 				<div class="absolute top-[-30px] left-[-10px] z-0 text-[96px] font-black leading-[1] text-[rgba(0,212,255,0.08)]">03</div>
 				<div class="relative z-1 p-[30px]">
 					<div class="mb-[25px] flex h-[50px] w-[50px] items-center justify-center rounded-xl bg-gradient-to-br from-[#00D4FF]/[0.15] to-[#00D4FF]/[0.03]">
-						<Check class="size-6" color="#00D4FF" stroke-width="1.5" />
+						<Check class="size-6" color="#00D4FF" stroke-width="1.5" aria-hidden="true" />
 					</div>
 					<h3 class="mb-[15px] text-[24px] font-bold text-white">Actuar</h3>
 					<p class="text-[16px] leading-[1.7] text-[#9CA3AF]">
