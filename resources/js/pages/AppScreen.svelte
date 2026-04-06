@@ -1,7 +1,7 @@
 <script>
 import AppFooter from '@/components/mind/AppFooter.svelte';
 import AppHeader from '@/components/mind/AppHeader.svelte';
-import AppLayout from '@/components/mind/AppLayout.svelte';
+import PageBackground from '@/components/mind/PageBackground.svelte';
 import InputArea from '@/components/mind/InputArea.svelte';
 
 let {
@@ -33,10 +33,10 @@ let {
 } = $props();
 </script>
 
-<AppLayout>
+<PageBackground>
 	<AppHeader />
 	<div class="relative z-1 mx-auto w-full">
 		<InputArea initialText={text} {currentText} {structuredData} />
 	</div>
 	<AppFooter />
-</AppLayout>
+</PageBackground>
