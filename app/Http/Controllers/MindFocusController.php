@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Services\QwenMindFocusService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class MindFocusController extends Controller
 {
-    public function structure(Request $request, QwenMindFocusService $mindFocusService)
+    public function structure(Request $request, QwenMindFocusService $mindFocusService): Response|RedirectResponse
     {
         $text = $request->input('text', '');
 
@@ -26,7 +29,7 @@ class MindFocusController extends Controller
         ]);
     }
 
-    public function structureApi(Request $request, QwenMindFocusService $mindFocusService)
+    public function structureApi(Request $request, QwenMindFocusService $mindFocusService): JsonResponse
     {
         $text = $request->input('text', '');
 
