@@ -1,5 +1,6 @@
 <script>
 import InputArea from '@/components/mind/InputArea.svelte';
+import Section from '@/components/mind/Section.svelte';
 
 let {
 	text = `# 🚀 Trabajo y Proyectos
@@ -30,8 +31,11 @@ let {
 } = $props();
 </script>
 
-<section id="demo" class="relative bg-gradient-to-[160deg] from-[#0D0E15] via-[#111320] to-[#0E0F18] px-5 py-[100px]">
-	<div class="relative z-1 mx-auto w-full">
-		<InputArea initialText={text} {currentText} {structuredData} />
-	</div>
-</section>
+<Section
+	id="demo"
+	useDefaults={false}
+	className="bg-gradient-to-[160deg] from-[#0D0E15] via-[#111320] to-[#0E0F18] px-5 py-[100px]"
+	innerClass="relative z-1 mx-auto w-full"
+>
+	<InputArea initialText={text} {currentText} {structuredData} />
+</Section>

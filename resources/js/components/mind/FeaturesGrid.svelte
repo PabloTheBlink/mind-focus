@@ -1,3 +1,7 @@
+<script>
+import FeatureCard from './FeatureCard.svelte';
+</script>
+
 <section class="relative bg-gradient-to-[160deg] from-[#090A0F] via-[#0B0C12] to-[#080910] px-5 py-[100px]">
 	<!-- Top line -->
 	<div class="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#00D4FF]/[0.15] to-transparent" />
@@ -11,42 +15,30 @@
 		</div>
 
 		<div class="grid gap-[30px] sm:grid-cols-2 lg:grid-cols-3">
-			<div class="rounded-lg border border-white/[0.06] bg-white/[0.02] p-[35px]">
-				<h3 class="mb-[12px] text-[20px] font-bold text-white">Entrada libre</h3>
-				<p class="text-[15px] leading-[1.6] text-[#9CA3AF]">
-					Sin categorías, sin etiquetas, sin estructura previa. Escribe como piensas. La IA se encarga del resto.
-				</p>
-			</div>
-			<div class="rounded-lg border border-white/[0.06] bg-white/[0.02] p-[35px]">
-				<h3 class="mb-[12px] text-[20px] font-bold text-white">Priorización inteligente</h3>
-				<p class="text-[15px] leading-[1.6] text-[#9CA3AF]">
-					No todas las tareas pesan igual. MIND-FOCUS identifica qué es urgente, qué es importante y qué puede esperar.
-				</p>
-			</div>
-			<div class="rounded-lg border border-white/[0.06] bg-white/[0.02] p-[35px]">
-				<h3 class="mb-[12px] text-[20px] font-bold text-white">Una acción a la vez</h3>
-				<p class="text-[15px] leading-[1.6] text-[#9CA3AF]">
-					Te da una única recomendación clara. Sin listas interminables. Sin abrumación. Solo el siguiente paso.
-				</p>
-			</div>
-			<div class="rounded-lg border border-white/[0.06] bg-white/[0.02] p-[35px]">
-				<h3 class="mb-[12px] text-[20px] font-bold text-white">Aprende de ti</h3>
-				<p class="text-[15px] leading-[1.6] text-[#9CA3AF]">
-					Cuantos más brain dumps haces, mejor entiende tus patrones, plazos y qué te genera más ansiedad.
-				</p>
-			</div>
-			<div class="rounded-lg border border-white/[0.06] bg-white/[0.02] p-[35px]">
-				<h3 class="mb-[12px] text-[20px] font-bold text-white">Sin curva de aprendizaje</h3>
-				<p class="text-[15px] leading-[1.6] text-[#9CA3AF]">
-					No hay tutorial que estudiar. No hay configuración compleja. Abres, escribes, recibes claridad.
-				</p>
-			</div>
-			<div class="rounded-lg border border-white/[0.06] bg-white/[0.02] p-[35px]">
-				<h3 class="mb-[12px] text-[20px] font-bold text-white">Privado y local</h3>
-				<p class="text-[15px] leading-[1.6] text-[#9CA3AF]">
-					Tus pensamientos no se comparten. Todo se procesa de forma segura y puedes usarlo sin cuenta.
-				</p>
-			</div>
+			<FeatureCard
+				title="Entrada libre"
+				description="Sin categorías, sin etiquetas, sin estructura previa. Escribe como piensas. La IA se encarga del resto."
+			/>
+			<FeatureCard
+				title="Priorización inteligente"
+				description="No todas las tareas pesan igual. MIND-FOCUS identifica qué es urgente, qué es importante y qué puede esperar."
+			/>
+			<FeatureCard
+				title="Una acción a la vez"
+				description="Te da una única recomendación clara. Sin listas interminables. Sin abrumación. Solo el siguiente paso."
+			/>
+			<FeatureCard
+				title="Aprende de ti"
+				description="Cuantos más brain dumps haces, mejor entiende tus patrones, plazos y qué te genera más ansiedad."
+			/>
+			<FeatureCard
+				title="Sin curva de aprendizaje"
+				description="No hay tutorial que estudiar. No hay configuración compleja. Abres, escribes, recibes claridad."
+			/>
+			<FeatureCard
+				title="Privado y local"
+				description="Tus pensamientos no se comparten. Todo se procesa de forma segura y puedes usarlo sin cuenta."
+			/>
 		</div>
 	</div>
 </section>
