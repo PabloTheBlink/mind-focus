@@ -31,6 +31,30 @@ class QwenMindFocusService
      * Structure a brain dump text into prioritized tasks/categories.
      *
      * Returns an array with structured data ready for display.
+     *
+     * @return array{
+     *     groups: array<int, array{
+     *         id: int,
+     *         name: string,
+     *         icon: string,
+     *         color: string,
+     *         subgroups: array<int, array{
+     *             id: int,
+     *             name: string,
+     *             type: string,
+     *             items: array<int, array{
+     *                 id: int,
+     *                 title: string,
+     *                 description: string,
+     *                 priority?: string,
+     *                 isPrimary: bool,
+     *                 estimatedTime?: string,
+     *                 tags?: array<int, string>
+     *             }>
+     *         }>
+     *     }>,
+     *     markdown: string
+     * }
      */
     public function structure(string $text): array
     {
@@ -63,7 +87,7 @@ class QwenMindFocusService
             $process->run();
 
             if (! $process->isSuccessful()) {
-                \Log::error('Qwen CLI error (MindFocus)', [
+                logger()->error('Qwen CLI error (MindFocus)', [
                     'exit_code' => $process->getExitCode(),
                     'error_output' => $process->getErrorOutput(),
                 ]);
@@ -73,7 +97,7 @@ class QwenMindFocusService
 
             return trim($process->getOutput());
         } catch (\Exception $e) {
-            \Log::error('Qwen CLI exception (MindFocus)', ['error' => $e->getMessage()]);
+            logger()->error('Qwen CLI exception (MindFocus)', ['error' => $e->getMessage()]);
 
             return null;
         }
@@ -176,34 +200,10 @@ class QwenMindFocusService
             }
         }
 
-        // If no primary was set but there are tasks, set the first urgent one as primary
-        if (! $hasPrimary) {
-            foreach ($groups as $groupIndex => $group) {
-                foreach ($group['subgroups'] as $subgroupIndex => $subgroup) {
-                    if ($subgroup['type'] !== 'tasks') {
-                        continue;
-                    }
-                    foreach ($subgroup['items'] as $itemIndex => $item) {
-                        if (($item['priority'] ?? '') === 'urgente') {
-                            $groups[$groupIndex]['subgroups'][$subgroupIndex]['items'][$itemIndex]['isPrimary'] = true;
-
-                            return ['groups' => $groups];
-                        }
-                    }
-                }
-            }
-        }
-
-        // If still no primary, make the first task primary
-        if (! $hasPrimary && count($groups) > 0) {
-            foreach ($groups as $groupIndex => $group) {
-                foreach ($group['subgroups'] as $subgroupIndex => $subgroup) {
-                    if ($subgroup['type'] === 'tasks' && count($subgroup['items']) > 0) {
-                        $groups[$groupIndex]['subgroups'][$subgroupIndex]['items'][0]['isPrimary'] = true;
-
-                        return ['groups' => $groups];
-                    }
-                }
+        // Set primary item for each subgroup's items
+        foreach ($groups as &$group) {
+            foreach ($group['subgroups'] as &$subgroup) {
+                $this->ensurePrimaryItem($subgroup['items']);
             }
         }
 
@@ -262,6 +262,22 @@ class QwenMindFocusService
         }
 
         return trim($markdown);
+    }
+
+    /**
+     * Ensure at least one item in the collection is marked as primary.
+     */
+    private function ensurePrimaryItem(array &$items): void
+    {
+        if (empty($items)) {
+            return;
+        }
+
+        $hasPrimary = collect($items)->contains('isPrimary', true);
+
+        if (! $hasPrimary) {
+            $items[0]['isPrimary'] = true;
+        }
     }
 
     /**

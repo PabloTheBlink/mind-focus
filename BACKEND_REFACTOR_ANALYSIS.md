@@ -16,7 +16,7 @@ The backend codebase is relatively small and well-structured, but several refact
 | Priority | File | Issue | Effort | Status |
 |----------|------|-------|--------|--------|
 | **High** | `app/Services/QwenMindFocusService.php` | Move `env()` call to config; extract system prompt | Medium | ✅ Done |
-| **High** | `app/Services/QwenMindFocusService.php` | Refactor `parseResponse()` -- reduce nesting, deduplicate logic | Medium | Pending |
+| **High** | `app/Services/QwenMindFocusService.php` | Refactor `parseResponse()` -- reduce nesting, deduplicate logic | Medium | ✅ Done |
 | **Medium** | `app/Http/Controllers/MindFocusController.php` | Add return type declarations | Low | ✅ Done |
 | **Medium** | `app/Services/QwenMindFocusService.php` | Replace redundant icon map with enum or validation | Low | ✅ Done |
 | **Medium** | `app/Http/Controllers/Settings/SecurityController.php` | Simplify nested ternary in `middleware()` | Low | Pending |
@@ -444,7 +444,7 @@ function something(): string
 3. ~~**Replace icon map**~~ -- ✅ simplifies validation logic
 4. ~~**Fix configuration issues** (move `env()` calls to config files)~~ -- ✅ prevents production bugs
 5. ~~**Extract system prompt**~~ -- ✅ makes service more maintainable
-6. **Refactor `parseResponse()`** -- reduces complexity and duplication
+6. ~~**Refactor `parseResponse()`**~~ -- ✅ reduces complexity and duplication
 7. **Add translations** -- prepares for internationalization
 8. **Consider background job** -- for production scalability
 
@@ -457,7 +457,7 @@ function something(): string
 | ~~Config fixes~~ | ~~30 min~~ | Low | ✅ Done |
 | ~~Return types~~ | ~~15 min~~ | Low | ✅ Done |
 | ~~Extract system prompt~~ | ~~1 hour~~ | Low | ✅ Done |
-| Refactor parseResponse | 2 hours | Medium | Pending |
+| Refactor parseResponse | 2 hours | Medium | ✅ Done |
 | ~~Icon map cleanup~~ | ~~30 min~~ | Low | ✅ Done |
 | Translation setup | 1 hour | Low | Pending |
 | ~~Test fixes~~ | ~~30 min~~ | Low | ✅ Done |
