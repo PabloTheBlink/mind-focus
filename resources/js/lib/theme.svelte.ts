@@ -10,6 +10,10 @@ export type ThemeState = {
     updateAppearance: (value: Appearance) => void;
 };
 
+// ——————————————————————————————————————————————————————————————————————
+// Private state & helpers
+// ——————————————————————————————————————————————————————————————————————
+
 const appearance = $state<{ value: Appearance }>({ value: 'system' });
 
 let themeChangeMediaQuery: MediaQueryList | null = null;
@@ -77,9 +81,14 @@ const detachThemeChangeListener = (): void => {
     themeChangeMediaQuery = null;
 };
 
-export function initializeTheme(): () => void {
+/**
+ * Initialize the theme on page load.
+ * Reads stored preference, applies it to the DOM, and listens for system theme changes.
+ * Call once during app bootstrap (see `app.ts`).
+ */
+export function initializeTheme(): void {
     if (typeof window === 'undefined') {
-        return () => {};
+        return;
     }
 
     if (!localStorage.getItem('appearance')) {
@@ -93,10 +102,13 @@ export function initializeTheme(): () => void {
     detachThemeChangeListener();
     themeChangeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     themeChangeMediaQuery.addEventListener('change', handleSystemThemeChange);
-
-    return detachThemeChangeListener;
 }
 
+/**
+ * Update the user's appearance preference.
+ * Persists to localStorage + cookie, and applies the theme to the DOM.
+ * @param value - 'light', 'dark', or 'system'
+ */
 export function updateAppearance(value: Appearance): void {
     appearance.value = value;
 
@@ -108,6 +120,14 @@ export function updateAppearance(value: Appearance): void {
     applyTheme(value);
 }
 
+/**
+ * Reactive theme state accessor.
+ * Returns the current appearance, a getter for the resolved appearance,
+ * and the update function. Use in Svelte components to access theme state.
+ *
+ * @example
+ * const { appearance, resolvedAppearance, updateAppearance } = themeState();
+ */
 export function themeState(): ThemeState {
     return {
         appearance,

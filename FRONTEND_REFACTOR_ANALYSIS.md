@@ -226,7 +226,7 @@ Then import in both `AppHeader.svelte` and `AppSidebar.svelte`.
 
 ---
 
-## 6. THEME MODULE EXPORTS UNUSED FUNCTIONS
+## 6. THEME MODULE EXPORTS UNUSED FUNCTIONS ✅ COMPLETED
 
 ### Problem
 `lib/theme.svelte.ts` exports `themeState()` which returns a `ThemeState` object, but the actual usage in `app.ts` only calls `initializeTheme()`. The `themeState()` function appears to be designed for reactive consumption but its usage pattern is unclear.
@@ -237,10 +237,16 @@ Additionally, `updateAppearance` is exported but not used anywhere in the visibl
 - Dead code if `themeState()` is not consumed
 - Confusing API surface for theme module
 
-### Recommendation
-1. Search for `themeState` usage. If unused, remove it.
-2. If `updateAppearance` is only used in one place, consider if it should be part of a more cohesive settings flow.
-3. Consider adding JSDoc to clarify the public API of this module.
+### Status
+✅ **COMPLETED** — Analysis revealed the original assessment was **incorrect**. All exports are actively used:
+- `themeState()` → consumed by `AppearanceTabs.svelte` and `TwoFactorSetupModal.svelte`
+- `updateAppearance()` → consumed via `themeState()` in `AppearanceTabs.svelte`
+- `initializeTheme()` → called in `app.ts` on bootstrap
+
+Improvements made:
+1. Added **JSDoc documentation** to all three public functions (`initializeTheme`, `updateAppearance`, `themeState`) clarifying the public API
+2. Changed `initializeTheme()` return type from `() => void` to `void` — the cleanup function was never consumed, and in a SPA context the listener lives for the app's lifetime
+3. Added section separator comments to distinguish private state/helpers from public exports
 
 **Priority:** Low
 
