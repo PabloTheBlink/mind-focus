@@ -346,20 +346,26 @@ This defeats the purpose of using Tailwind CSS and creates a mixed styling appro
 - Harder to maintain dark mode consistency
 - `prose` classes from `@tailwindcss/typography` plugin could replace most of this
 
-### Recommendation
-Use Tailwind's typography plugin instead:
+### Status
+✅ **COMPLETED** - Replaced raw CSS `<style>` block with Tailwind CSS typography plugin:
 
-```svelte
-<div class="prose prose-invert prose-sm max-w-none
-    prose-h1:text-2xl prose-h1:font-bold
-    prose-h2:text-xl prose-h2:font-semibold
-    prose-blockquote:border-cyan-400
-    prose-a:text-cyan-400">
-    {@html renderedMarkdown}
-</div>
-```
+1. Installed `@tailwindcss/typography` package
+2. Configured plugin in `app.css` via `@plugin '@tailwindcss/typography'`
+3. Added custom prose CSS variables in `app.css` matching original colors:
+   - `--tw-prose-body: #94a3b8`, `--tw-prose-headings: #ffffff`, `--tw-prose-links: #00d4ff`
+   - `--tw-prose-quote-borders: #00d4ff` (cyan blockquote borders)
+   - `--tw-prose-pre-bg: #0f172a` (dark code blocks)
+4. Added minimal CSS overrides for custom styles:
+   - `h1`: border-bottom + padding via `@apply`
+   - `blockquote`: `border-left-width: 3px` (custom value not in Tailwind)
+   - `pre`: `border border-white/5`
+   - `code`: `bg-white/5 rounded`
+5. Updated `InputArea.svelte`: added `prose-sm` class to markdown preview div
+6. Removed entire `<style>` block (~80 lines of raw CSS)
 
-If custom colors are needed beyond Tailwind's palette, add them to `tailwind.config.js`.
+Note: Custom scrollbar styles removed (minor cosmetic detail). The markdown preview now uses 100% Tailwind utilities with minimal CSS overrides only for values not expressible as utilities.
+
+Build and type check verified successfully (0 errors).
 
 **Priority:** Medium
 

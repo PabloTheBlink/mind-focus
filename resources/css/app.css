@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@plugin '@tailwindcss/typography';
+
 @import 'tw-animate-css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -169,4 +171,40 @@
     body {
         @apply bg-background text-foreground;
     }
+}
+
+/* Custom prose styles for dark markdown preview */
+.prose {
+    --tw-prose-body: #94a3b8;
+    --tw-prose-headings: #ffffff;
+    --tw-prose-lead: #94a3b8;
+    --tw-prose-links: #00d4ff;
+    --tw-prose-bold: #ffffff;
+    --tw-prose-counters: #94a3b8;
+    --tw-prose-bullets: #94a3b8;
+    --tw-prose-hr: rgba(255, 255, 255, 0.05);
+    --tw-prose-quotes: #64748b;
+    --tw-prose-quote-borders: #00d4ff;
+    --tw-prose-captions: #94a3b8;
+    --tw-prose-code: #f1f5f9;
+    --tw-prose-pre-code: #f1f5f9;
+    --tw-prose-pre-bg: #0f172a;
+    --tw-prose-th-borders: rgba(255, 255, 255, 0.05);
+    --tw-prose-td-borders: rgba(255, 255, 255, 0.05);
+}
+
+.prose :global(h1) {
+    @apply border-b border-white/5 pb-2;
+}
+
+.prose :global(blockquote) {
+    border-left-width: 3px;
+}
+
+.prose :global(pre) {
+    @apply border border-white/5;
+}
+
+.prose :global(code) {
+    @apply bg-white/5 rounded px-1 py-0.5;
 }

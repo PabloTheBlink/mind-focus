@@ -528,7 +528,7 @@ Solo escribe."
 					tabindex="0"
 					onclick={() => (isEditing = true)}
 					onkeydown={(e) => e.key === 'Enter' && (isEditing = true)}
-					class="prose prose-invert h-full min-h-[380px] w-full cursor-text overflow-y-auto rounded-lg border border-white/[0.04] bg-white/[0.02] px-5 py-[20px]"
+					class="prose prose-sm prose-invert h-full min-h-[380px] w-full cursor-text overflow-y-auto rounded-lg border border-white/[0.04] bg-white/[0.02] px-5 py-[20px]"
 				>
 					{@html renderedMarkdown}
 				</div>
@@ -756,106 +756,3 @@ Solo escribe."
 		</div>
 	</div>
 </div>
-
-<style>
-	/* Markdown Preview Styles */
-	.prose :global(h1) {
-		font-size: 1.5rem;
-		font-weight: 700;
-		color: white;
-		margin-top: 1.5rem;
-		margin-bottom: 1rem;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-		padding-bottom: 0.5rem;
-	}
-
-	.prose :global(h2) {
-		font-size: 1.25rem;
-		font-weight: 600;
-		color: #e2e8f0;
-		margin-top: 1.25rem;
-		margin-bottom: 0.75rem;
-	}
-
-	.prose :global(h3) {
-		font-size: 1.1rem;
-		font-weight: 600;
-		color: #cbd5e1;
-		margin-top: 1rem;
-		margin-bottom: 0.5rem;
-	}
-
-	.prose :global(p) {
-		margin-bottom: 1rem;
-		line-height: 1.7;
-		color: #94a3b8;
-	}
-
-	.prose :global(ul), .prose :global(ol) {
-		margin-bottom: 1rem;
-		padding-left: 1.5rem;
-	}
-
-	.prose :global(li) {
-		margin-bottom: 0.5rem;
-		color: #94a3b8;
-	}
-
-	.prose :global(li > p) {
-		margin-bottom: 0.25rem;
-	}
-
-	.prose :global(blockquote) {
-		border-left: 3px solid #00D4FF;
-		padding-left: 1rem;
-		font-style: italic;
-		color: #64748b;
-		margin: 1rem 0;
-	}
-
-	.prose :global(code) {
-		background: rgba(255, 255, 255, 0.05);
-		padding: 0.2rem 0.4rem;
-		border-radius: 4px;
-		font-family: ui-monospace, monospace;
-		font-size: 0.9em;
-		color: #f1f5f9;
-	}
-
-	.prose :global(pre) {
-		background: #0f172a;
-		padding: 1rem;
-		border-radius: 8px;
-		overflow-x: auto;
-		margin: 1rem 0;
-		border: 1px solid rgba(255, 255, 255, 0.05);
-	}
-
-	.prose :global(a) {
-		color: #00D4FF;
-		text-decoration: underline;
-	}
-
-	.prose :global(strong) {
-		color: white;
-		font-weight: 600;
-	}
-
-	/* Simple scrollbar for the preview */
-	.prose::-webkit-scrollbar {
-		width: 6px;
-	}
-
-	.prose::-webkit-scrollbar-track {
-		background: transparent;
-	}
-
-	.prose::-webkit-scrollbar-thumb {
-		background: rgba(255, 255, 255, 0.05);
-		border-radius: 3px;
-	}
-
-	.prose::-webkit-scrollbar-thumb:hover {
-		background: rgba(255, 255, 255, 0.1);
-	}
-</style>
