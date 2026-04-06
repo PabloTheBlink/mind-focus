@@ -1,6 +1,7 @@
 <script>
 import { Link } from '@inertiajs/svelte';
 import Logo from './Logo.svelte';
+import { externalLinks } from '@/lib/links';
 </script>
 
 <footer class="bg-gradient-to-b from-[#060608] to-[#040405] px-5 pt-[60px] pb-[40px] border-t border-white/[0.04]">
@@ -37,8 +38,8 @@ import Logo from './Logo.svelte';
 				<div>
 					<p class="mb-[20px] text-[12px] font-semibold tracking-[2px] text-[#9CA3AF] uppercase">Legal</p>
 					<div class="flex flex-col gap-3">
-						<a href="#privacy" class="text-[14px] text-[#D1D5DB] no-underline hover:text-white">Privacidad</a>
-						<a href="#terms" class="text-[14px] text-[#D1D5DB] no-underline hover:text-white">Términos</a>
+						<a href={externalLinks.privacy} class="text-[14px] text-[#D1D5DB] no-underline hover:text-white">Privacidad</a>
+						<a href={externalLinks.terms} class="text-[14px] text-[#D1D5DB] no-underline hover:text-white">Términos</a>
 					</div>
 				</div>
 			</div>
@@ -48,9 +49,9 @@ import Logo from './Logo.svelte';
 		<div class="flex flex-wrap items-center justify-between gap-5 border-t border-white/[0.04] pt-[30px]">
 			<p class="text-[13px] text-[#6B7280]">2026 MIND-FOCUS. Todos los derechos reservados.</p>
 			<div class="flex gap-5">
-				<a href="#twitter" class="text-[13px] text-[#6B7280] no-underline hover:text-white">Twitter</a>
-				<a href="#linkedin" class="text-[13px] text-[#6B7280] no-underline hover:text-white">LinkedIn</a>
-				<a href="#github" class="text-[13px] text-[#6B7280] no-underline hover:text-white">GitHub</a>
+				<a href={externalLinks.social.twitter} class="text-[13px] text-[#6B7280] no-underline hover:text-white">Twitter</a>
+				<a href={externalLinks.social.linkedin} class="text-[13px] text-[#6B7280] no-underline hover:text-white">LinkedIn</a>
+				<a href={externalLinks.social.github} class="text-[13px] text-[#6B7280] no-underline hover:text-white">GitHub</a>
 			</div>
 		</div>
 	</div>

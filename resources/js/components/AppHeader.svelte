@@ -40,6 +40,7 @@
     } from '@/components/ui/tooltip';
     import UserMenuContent from '@/components/UserMenuContent.svelte';
     import { currentUrlState } from '@/lib/currentUrl.svelte';
+    import { externalLinks } from '@/lib/links';
     import { getInitials } from '@/lib/initials';
     import { toUrl } from '@/lib/utils';
     import { dashboard } from '@/routes';
@@ -68,12 +69,12 @@
     const rightNavItems: NavItem[] = [
         {
             title: 'Repository',
-            href: 'https://github.com/laravel/svelte-starter-kit',
+            href: externalLinks.github,
             icon: Folder,
         },
         {
             title: 'Documentation',
-            href: 'https://laravel.com/docs/starter-kits#svelte',
+            href: externalLinks.docs,
             icon: BookOpen,
         },
     ];

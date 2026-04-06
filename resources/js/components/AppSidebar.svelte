@@ -17,6 +17,7 @@
         SidebarMenuButton,
         SidebarMenuItem,
     } from '@/components/ui/sidebar';
+    import { externalLinks } from '@/lib/links';
     import { toUrl } from '@/lib/utils';
     import { dashboard } from '@/routes';
     import type { NavItem } from '@/types';
@@ -38,12 +39,12 @@
     const footerNavItems: NavItem[] = [
         {
             title: 'Repository',
-            href: 'https://github.com/laravel/svelte-starter-kit',
+            href: externalLinks.github,
             icon: FolderGit2,
         },
         {
             title: 'Documentation',
-            href: 'https://laravel.com/docs/starter-kits#svelte',
+            href: externalLinks.docs,
             icon: BookOpen,
         },
     ];

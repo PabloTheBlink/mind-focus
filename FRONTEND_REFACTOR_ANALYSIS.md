@@ -277,32 +277,19 @@ External URLs (GitHub, Laravel docs) are **hardcoded as strings** in multiple pl
 
 - `AppHeader.svelte`: GitHub and Laravel docs URLs
 - `AppSidebar.svelte`: Same URLs duplicated
-- `Footer.svelte`: Placeholder `#privacy`, `#help`, `#twitter`, `#linkedin`, `#github` anchors
+- `LandingFooter.svelte`: Placeholder `#privacy`, `#terms`, `#twitter`, `#linkedin`, `#github` anchors
 
 ### Impact
 - Changing external links requires code changes
 - No centralized configuration
 - Footer links are placeholder anchors that don't go anywhere
 
-### Recommendation
-Create a config file for external links:
-
-```ts
-// lib/links.ts
-export const externalLinks = {
-    github: 'https://github.com/laravel/svelte-starter-kit',
-    docs: 'https://laravel.com/docs/starter-kits#svelte',
-    social: {
-        twitter: '#',
-        linkedin: '#',
-        github: '#',
-    },
-    legal: {
-        privacy: '#',
-        terms: '#',
-    },
-} as const;
-```
+### Status
+✅ **COMPLETED** - Created `lib/links.ts` with centralized external links configuration. Updated all hardcoded URLs in:
+- `AppHeader.svelte`: `externalLinks.github`, `externalLinks.docs`
+- `AppSidebar.svelte`: `externalLinks.github`, `externalLinks.docs`
+- `LandingFooter.svelte`: `externalLinks.social.*`, `externalLinks.legal.*`
+- Build verified successfully with `npm run build`
 
 **Priority:** Low (but good for maintainability)
 
