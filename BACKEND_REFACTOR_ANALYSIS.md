@@ -18,7 +18,7 @@ The backend codebase is relatively small and well-structured, but several refact
 | **High** | `app/Services/QwenMindFocusService.php` | Move `env()` call to config; extract system prompt | Medium | Pending |
 | **High** | `app/Services/QwenMindFocusService.php` | Refactor `parseResponse()` -- reduce nesting, deduplicate logic | Medium | Pending |
 | **Medium** | `app/Http/Controllers/MindFocusController.php` | Add return type declarations | Low | ✅ Done |
-| **Medium** | `app/Services/QwenMindFocusService.php` | Replace redundant icon map with enum or validation | Low | Pending |
+| **Medium** | `app/Services/QwenMindFocusService.php` | Replace redundant icon map with enum or validation | Low | ✅ Done |
 | **Medium** | `app/Http/Controllers/Settings/SecurityController.php` | Simplify nested ternary in `middleware()` | Low | Pending |
 | **Low** | `app/Http/Controllers/MindFocusController.php` | Extract validation to Form Request; use translations | Low | Pending |
 | **Low** | `config/services.php` | Add `qwen` configuration section | Low | Pending |
@@ -174,9 +174,9 @@ foreach ($groups as &$group) {
 
 ---
 
-#### 5. Icon map is redundant
+#### 5. Icon map is redundant ✅ RESOLVED
 
-**Current:**
+**Was:**
 ```php
 $iconMap = [
     'briefcase' => 'briefcase',
@@ -186,36 +186,16 @@ $iconMap = [
 ];
 ```
 
-**Problem:** This just validates that the icon is one of allowed values -- but returns the same value if valid or defaults to `briefcase`.
-
-**Recommended Fix:**
-
-Option A -- Simple validation:
+**Now:**
 ```php
 private const ALLOWED_ICONS = [
-    'briefcase', 'user', 'users', 'heart', 'graduation-cap',
-    'credit-card', 'home', 'rocket', 'book', 'star',
-    'target', 'lightbulb', 'cog', 'folder', 'calendar',
+    'briefcase', 'user', 'heart', 'lightbulb',
+    'dollar-sign', 'book', 'home', 'users',
 ];
 
-$icon = in_array($groupData['icon'], self::ALLOWED_ICONS, true)
-    ? $groupData['icon']
+$icon = in_array($group['icon'] ?? null, self::ALLOWED_ICONS, true)
+    ? $group['icon']
     : 'briefcase';
-```
-
-Option B -- Enum (PHP 8.1+):
-```php
-enum MindFocusIcon: string
-{
-    case Briefcase = 'briefcase';
-    case User = 'user';
-    // ... etc
-    
-    public static function tryFrom(string $value): self
-    {
-        return self::tryFrom($value) ?? self::Briefcase;
-    }
-}
 ```
 
 ---
@@ -465,10 +445,10 @@ function something(): string
 
 1. ~~**Add return type declarations**~~ -- ✅ improves code quality and IDE support
 2. ~~**Fix test configuration**~~ -- ✅ ensures reliable test suite
-3. **Fix configuration issues** (move `env()` calls to config files) -- prevents production bugs
-4. **Extract system prompt** -- makes service more maintainable
-5. **Refactor `parseResponse()`** -- reduces complexity and duplication
-6. **Replace icon map** -- simplifies validation logic
+3. ~~**Replace icon map**~~ -- ✅ simplifies validation logic
+4. **Fix configuration issues** (move `env()` calls to config files) -- prevents production bugs
+5. **Extract system prompt** -- makes service more maintainable
+6. **Refactor `parseResponse()`** -- reduces complexity and duplication
 7. **Add translations** -- prepares for internationalization
 8. **Consider background job** -- for production scalability
 
@@ -482,7 +462,7 @@ function something(): string
 | ~~Return types~~ | ~~15 min~~ | Low | ✅ Done |
 | Extract system prompt | 1 hour | Low | Pending |
 | Refactor parseResponse | 2 hours | Medium | Pending |
-| Icon map cleanup | 30 min | Low | Pending |
+| Icon map cleanup | ~~30 min~~ | Low | ✅ Done |
 | Translation setup | 1 hour | Low | Pending |
 | ~~Test fixes~~ | ~~30 min~~ | Low | ✅ Done |
 | Background job (optional) | 3 hours | Medium | Pending |

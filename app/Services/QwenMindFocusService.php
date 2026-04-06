@@ -6,6 +6,17 @@ use Symfony\Component\Process\Process;
 
 class QwenMindFocusService
 {
+    private const ALLOWED_ICONS = [
+        'briefcase',
+        'user',
+        'heart',
+        'lightbulb',
+        'dollar-sign',
+        'book',
+        'home',
+        'users',
+    ];
+
     private int $timeout = 120;
 
     private string $binaryPath;
@@ -226,20 +237,9 @@ PROMPT;
             }
 
             if (count($subgroups) > 0) {
-                $iconMap = [
-                    'briefcase' => 'briefcase',
-                    'user' => 'user',
-                    'heart' => 'heart',
-                    'lightbulb' => 'lightbulb',
-                    'dollar-sign' => 'dollar-sign',
-                    'book' => 'book',
-                    'home' => 'home',
-                    'users' => 'users',
-                ];
-                $icon = $group['icon'] ?? 'briefcase';
-                if (! isset($iconMap[$icon])) {
-                    $icon = 'briefcase';
-                }
+                $icon = in_array($group['icon'] ?? null, self::ALLOWED_ICONS, true)
+                    ? $group['icon']
+                    : 'briefcase';
 
                 $groups[] = [
                     'id' => $group['id'] ?? $groupIndex + 1,
