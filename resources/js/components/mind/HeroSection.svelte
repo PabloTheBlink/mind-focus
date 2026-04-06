@@ -8,21 +8,21 @@ let { subtitle = 'Tu mente no es el problema' } = $props();
 
 <Section
 	useDefaults={false}
-	className="flex flex-col items-center justify-center min-h-[90vh] bg-gradient-to-[160deg] from-[#0F1117] via-[#0A0D14] to-[#060810] px-5 py-[80px] text-center"
+	className="flex flex-col items-center justify-center min-h-[90vh] bg-gradient-to-[160deg] from-[#0F1117] via-dark-bg to-dark-bg-alt px-5 py-[80px] text-center"
 	innerClass="relative z-2 max-w-[900px]"
 >
-	<p class="mb-[30px] text-[14px] font-medium tracking-[4px] text-[#9CA3AF] uppercase">{subtitle}</p>
+	<p class="mb-[30px] text-[14px] font-medium tracking-[4px] text-text-secondary uppercase">{subtitle}</p>
 	<h1 class="mb-[30px] text-[72px] font-extrabold tracking-[-2px] leading-[1.1] text-white">
 		El ruido mental
-		<span class="block text-[#00D4FF]">te paraliza.</span>
+		<span class="block text-cyan">te paraliza.</span>
 	</h1>
-	<p class="mx-auto mb-[50px] max-w-[650px] text-[22px] font-light leading-[1.6] text-[#D1D5DB]">
+	<p class="mx-auto mb-[50px] max-w-[650px] text-[22px] font-light leading-[1.6] text-text-primary">
 		Tienes cien ideas, cinco proyectos y una lista de tareas que no paras de posponer. Tu cabeza es un navegador con cuarenta pestañas abiertas. Y ninguna carga.
 	</p>
 	<div class="flex flex-wrap justify-center gap-5">
 		<Link
 			href={app()}
-			class="bg-[#00D4FF] px-12 py-[18px] text-[16px] font-bold tracking-[1px] uppercase text-[#0A0A0A] transition-all hover:shadow-[0_0_40px_rgba(0,212,255,0.4)]"
+			class="bg-cyan px-12 py-[18px] text-[16px] font-bold tracking-[1px] uppercase text-[#0A0A0A] transition-all hover:shadow-[0_0_40px_rgba(0,212,255,0.4)]"
 		>
 			Empieza ahora
 		</Link>

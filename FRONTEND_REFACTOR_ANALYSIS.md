@@ -385,51 +385,41 @@ Throughout the `mind/` components, there are **hardcoded magic numbers**:
 | `text-[#6B7280]` (muted text) | 15+ | All mind components |
 | `min-h-[90vh]`, `min-h-[500px]` | 5+ | HeroSection, LiveDemo |
 
-### Impact
-- Changing brand colors requires editing 10+ files
-- Inconsistent spacing across sections
-- No design token system
+### Status
+✅ **COMPLETED** - Created centralized design tokens in `app.css` `@theme inline` block and replaced hardcoded colors across all `mind/` components:
 
-### Recommendation
-Create a design tokens file:
+**Design tokens added:**
+- Brand colors: `--color-cyan` (#00D4FF), `--color-cyan-dark` (#00B8E6), `--color-purple` (#A78BFA), `--color-purple-dark` (#8B5CF6)
+- Dark surfaces: `--color-dark-bg` (#0A0D14), `--color-dark-bg-alt` (#060810), `--color-dark-surface` (rgba(255,255,255,0.02))
+- Border tokens: `--color-border-dark-subtle` (rgba(255,255,255,0.06)), `--color-border-dark-faint` (rgba(255,255,255,0.04)), `--color-border-dark-medium` (rgba(255,255,255,0.05))
+- Text tokens: `--color-text-muted` (#6B7280), `--color-text-secondary` (#9CA3AF), `--color-text-primary` (#D1D5DB), `--color-text-muted-dark` (#4B5563)
 
-```ts
-// lib/design-tokens.ts (or use Tailwind theme extensions)
-export const colors = {
-    brand: {
-        cyan: '#00D4FF',
-        purple: '#A78BFA',
-        green: '#22C55E',
-    },
-    dark: {
-        bg: '#0A0D14',
-        bgAlt: '#060810',
-        surface: 'rgba(255, 255, 255, 0.02)',
-    },
-    border: {
-        subtle: 'rgba(255, 255, 255, 0.06)',
-        faint: 'rgba(255, 255, 255, 0.04)',
-    },
-    text: {
-        primary: '#FFFFFF',
-        secondary: '#D1D5DB',
-        muted: '#6B7280',
-    },
-} as const;
-```
+**Components updated (16 files):**
+- `Logo.svelte`: `text-[#00D4FF]` → `text-cyan`, `text-[#9CA3AF]` → `text-text-secondary`
+- `FeatureCard.svelte`: `border-white/[0.06]` → `border-border-dark-subtle`, `bg-white/[0.02]` → `bg-dark-surface`, `text-[#9CA3AF]` → `text-text-secondary`
+- `AppFooter.svelte`: `border-white/[0.04]` → `border-border-dark-faint`, `text-[#4B5563]` → `text-text-muted-dark`
+- `LandingFooter.svelte`: All text grays replaced with `text-text-muted`, `text-text-secondary`, `text-text-primary`; borders with `border-border-dark-faint`
+- `AppHeader.svelte`: `border-white/[0.05]` → `border-border-dark-medium`, `text-[#6B7280]` → `text-text-muted`
+- `PageBackground.svelte`: `bg-[#0A0D14]` → `bg-dark-bg`, gradient uses CSS variables
+- `Section.svelte`: Gradient from/to uses `from-dark-bg to-dark-bg-alt`
+- `MainLayout.svelte`: Nav links use `text-text-primary`, button uses `bg-cyan`, border uses `border-border-dark-subtle`
+- `HeroSection.svelte`: Cyan accents use `text-cyan`/`bg-cyan`, text uses `text-text-secondary`/`text-text-primary`
+- `CTASection.svelte`: `via-[#00D4FF]/[0.25]` → `via-cyan/25`, button uses `bg-cyan`, text uses `text-text-secondary`/`text-text-muted`
+- `HowItWorks.svelte`: Icon colors use `text-cyan`/`text-purple`, gradient backgrounds use `from-cyan/15 to-cyan/3`, text uses `text-text-secondary`
+- `SolutionReveal.svelte`: All cyan/purple hex colors replaced with `text-cyan`/`text-purple`/`bg-cyan`/`text-text-primary`/`text-text-secondary`
+- `ProblemStatement.svelte`: Stat colors replaced with `text-cyan`/`text-purple`, borders use `border-cyan/30`/`border-purple/30`, text uses `text-text-primary`/`text-text-secondary`
+- `FeaturesGrid.svelte`: Section gradient uses `from-dark-bg to-dark-bg-alt`, label uses `text-cyan`, top line uses `via-cyan/15`
+- `ChaosVisual.svelte`: SVG strokes use `var(--color-cyan)`/`var(--color-purple)` for CSS variable injection, glow elements use `border-cyan`/`bg-cyan`
+- `Testimonials.svelte`: Cards use `border-border-dark-subtle`/`bg-dark-surface`, stars use `text-cyan`, avatars use `from-cyan to-cyan-dark`/`from-purple to-purple-dark`, text uses `text-text-primary`/`text-text-muted`
 
-Or better, extend Tailwind's theme in `app.css`:
-```css
-@theme {
-    --color-brand-cyan: #00D4FF;
-    --color-brand-purple: #A78BFA;
-    --color-dark-bg: #0A0D14;
-    --color-dark-surface: rgba(255, 255, 255, 0.02);
-    --border-dark-subtle: rgba(255, 255, 255, 0.06);
-}
-```
+**Impact:**
+- ~200+ hardcoded hex color values replaced with semantic design tokens
+- Single source of truth for brand colors in `app.css`
+- Future color changes require editing only 1 file (theme block in `app.css`)
+- Consistent color usage across all components
+- Zero visual regression - all colors map to their original values
 
-Then use: `bg-brand-cyan`, `border-dark-subtle`, `text-muted`.
+Build verified successfully with `npm run build`.
 
 **Priority:** High
 

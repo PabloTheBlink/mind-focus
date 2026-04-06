@@ -10,7 +10,7 @@
  */
 let { id, class: className = '', innerClass = '', useDefaults = true, children } = $props();
 
-const sectionBase = 'relative bg-gradient-to-[160deg] from-[#090A0F] via-[#0B0C12] to-[#080910] px-5 py-[100px]';
+const sectionBase = 'relative bg-gradient-to-[160deg] from-dark-bg via-[#0B0C12] to-dark-bg-alt px-5 py-[100px]';
 const sectionClasses = $derived(useDefaults ? `${sectionBase} ${className}` : `relative ${className}`);
 </script>
 

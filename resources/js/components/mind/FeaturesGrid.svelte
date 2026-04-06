@@ -2,13 +2,13 @@
 import FeatureCard from './FeatureCard.svelte';
 </script>
 
-<section class="relative bg-gradient-to-[160deg] from-[#090A0F] via-[#0B0C12] to-[#080910] px-5 py-[100px]">
+<section class="relative bg-gradient-to-[160deg] from-dark-bg via-[#0B0C12] to-dark-bg-alt px-5 py-[100px]">
 	<!-- Top line -->
-	<div class="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#00D4FF]/[0.15] to-transparent" />
+	<div class="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-cyan/15 to-transparent" />
 
 	<div class="mx-auto max-w-[1100px]">
 		<div class="mb-[70px] text-center">
-			<p class="mb-[20px] text-[13px] font-semibold tracking-[3px] text-[#00D4FF] uppercase">Por qué es diferente</p>
+			<p class="mb-[20px] text-[13px] font-semibold tracking-[3px] text-cyan uppercase">Por qué es diferente</p>
 			<h2 class="mb-[20px] text-[44px] font-bold tracking-[-1px] leading-[1.2] text-white">
 				No organiza tu caos. Lo elimina.
 			</h2>

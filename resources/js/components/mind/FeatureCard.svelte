@@ -8,7 +8,7 @@
 let { title, description } = $props();
 </script>
 
-<div class="rounded-lg border border-white/[0.06] bg-white/[0.02] p-[35px]">
+<div class="rounded-lg border border-border-dark-subtle bg-dark-surface p-[35px]">
 	<h3 class="mb-[12px] text-[20px] font-bold text-white">{title}</h3>
-	<p class="text-[15px] leading-[1.6] text-[#9CA3AF]">{description}</p>
+	<p class="text-[15px] leading-[1.6] text-text-secondary">{description}</p>
 </div>
