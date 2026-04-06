@@ -1,8 +1,5 @@
 <script lang="ts">
     import { Link, page } from '@inertiajs/svelte';
-    import BookOpen from 'lucide-svelte/icons/book-open';
-    import Folder from 'lucide-svelte/icons/folder';
-    import LayoutGrid from 'lucide-svelte/icons/layout-grid';
     import Menu from 'lucide-svelte/icons/menu';
     import Search from 'lucide-svelte/icons/search';
     import AppLogo from '@/components/AppLogo.svelte';
@@ -40,11 +37,11 @@
     } from '@/components/ui/tooltip';
     import UserMenuContent from '@/components/UserMenuContent.svelte';
     import { currentUrlState } from '@/lib/currentUrl.svelte';
-    import { externalLinks } from '@/lib/links';
     import { getInitials } from '@/lib/initials';
+    import { mainNavItems, rightNavItems } from '@/lib/navigation';
     import { toUrl } from '@/lib/utils';
     import { dashboard } from '@/routes';
-    import type { BreadcrumbItem, NavItem } from '@/types';
+    import type { BreadcrumbItem } from '@/types';
 
     let {
         breadcrumbs = [],
@@ -57,27 +54,6 @@
 
     const activeItemStyles =
         'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
-
-    const mainNavItems: NavItem[] = [
-        {
-            title: 'Dashboard',
-            href: dashboard(),
-            icon: LayoutGrid,
-        },
-    ];
-
-    const rightNavItems: NavItem[] = [
-        {
-            title: 'Repository',
-            href: externalLinks.github,
-            icon: Folder,
-        },
-        {
-            title: 'Documentation',
-            href: externalLinks.docs,
-            icon: BookOpen,
-        },
-    ];
 </script>
 
 <div>

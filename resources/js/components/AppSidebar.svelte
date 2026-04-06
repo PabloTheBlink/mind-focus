@@ -1,8 +1,5 @@
 <script lang="ts">
     import { Link } from '@inertiajs/svelte';
-    import BookOpen from 'lucide-svelte/icons/book-open';
-    import FolderGit2 from 'lucide-svelte/icons/folder-git-2';
-    import LayoutGrid from 'lucide-svelte/icons/layout-grid';
     import type { Snippet } from 'svelte';
     import AppLogo from '@/components/AppLogo.svelte';
     import NavFooter from '@/components/NavFooter.svelte';
@@ -17,37 +14,15 @@
         SidebarMenuButton,
         SidebarMenuItem,
     } from '@/components/ui/sidebar';
-    import { externalLinks } from '@/lib/links';
     import { toUrl } from '@/lib/utils';
     import { dashboard } from '@/routes';
-    import type { NavItem } from '@/types';
+    import { mainNavItems, footerNavItems } from '@/lib/navigation';
 
     let {
         children,
     }: {
         children?: Snippet;
     } = $props();
-
-    const mainNavItems: NavItem[] = [
-        {
-            title: 'Dashboard',
-            href: dashboard(),
-            icon: LayoutGrid,
-        },
-    ];
-
-    const footerNavItems: NavItem[] = [
-        {
-            title: 'Repository',
-            href: externalLinks.github,
-            icon: FolderGit2,
-        },
-        {
-            title: 'Documentation',
-            href: externalLinks.docs,
-            icon: BookOpen,
-        },
-    ];
 </script>
 
 <Sidebar collapsible="icon" variant="inset">
