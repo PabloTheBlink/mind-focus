@@ -1,7 +1,7 @@
 <script>
-import Pen from 'lucide-svelte/icons/pen';
-import Clock from 'lucide-svelte/icons/clock';
 import Check from 'lucide-svelte/icons/check';
+import Clock from 'lucide-svelte/icons/clock';
+import Pen from 'lucide-svelte/icons/pen';
 </script>
 
 <section id="como-funciona" class="relative mx-auto max-w-[1200px] bg-gradient-to-[160deg] from-[#0E1015] via-[#131520] to-[#0F1118] px-5 py-[100px]">

@@ -1,8 +1,8 @@
 <script>
 import AppFooter from '@/components/mind/AppFooter.svelte';
 import AppHeader from '@/components/mind/AppHeader.svelte';
-import PageBackground from '@/components/mind/PageBackground.svelte';
 import InputArea from '@/components/mind/InputArea.svelte';
+import PageBackground from '@/components/mind/PageBackground.svelte';
 
 let {
 	text = `# 🚀 Trabajo y Proyectos

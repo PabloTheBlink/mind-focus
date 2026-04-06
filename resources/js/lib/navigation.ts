@@ -1,9 +1,9 @@
+import BookOpen from 'lucide-svelte/icons/book-open';
+import FolderGit2 from 'lucide-svelte/icons/folder-git-2';
+import LayoutGrid from 'lucide-svelte/icons/layout-grid';
+import { externalLinks } from '@/lib/links';
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
-import LayoutGrid from 'lucide-svelte/icons/layout-grid';
-import FolderGit2 from 'lucide-svelte/icons/folder-git-2';
-import BookOpen from 'lucide-svelte/icons/book-open';
-import { externalLinks } from '@/lib/links';
 
 export const mainNavItems: NavItem[] = [
     {

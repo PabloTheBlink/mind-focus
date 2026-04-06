@@ -1,7 +1,7 @@
 <script>
 import { Link } from '@inertiajs/svelte';
-import Logo from './Logo.svelte';
 import { externalLinks } from '@/lib/links';
+import Logo from './Logo.svelte';
 </script>
 
 <footer class="bg-gradient-to-b from-[#060608] to-[#040405] px-5 pt-[60px] pb-[40px] border-t border-white/[0.04]">

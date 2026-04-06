@@ -1,24 +1,28 @@
 <script>
 import DOMPurify from 'dompurify';
-import { marked } from 'marked';
-import { SvelteSet } from 'svelte/reactivity';
-import Briefcase from 'lucide-svelte/icons/briefcase';
-import User from 'lucide-svelte/icons/user';
-import Lightbulb from 'lucide-svelte/icons/lightbulb';
-import Heart from 'lucide-svelte/icons/heart';
-import DollarSign from 'lucide-svelte/icons/dollar-sign';
+import AlertCircle from 'lucide-svelte/icons/alert-circle';
 import Book from 'lucide-svelte/icons/book';
-import Home from 'lucide-svelte/icons/home';
-import Users from 'lucide-svelte/icons/users';
+import Briefcase from 'lucide-svelte/icons/briefcase';
 import Check from 'lucide-svelte/icons/check';
 import ChevronDown from 'lucide-svelte/icons/chevron-down';
-import Loader2 from 'lucide-svelte/icons/loader-2';
 import Circle from 'lucide-svelte/icons/circle';
+import DollarSign from 'lucide-svelte/icons/dollar-sign';
+import Heart from 'lucide-svelte/icons/heart';
+import Home from 'lucide-svelte/icons/home';
+import Lightbulb from 'lucide-svelte/icons/lightbulb';
+import Loader2 from 'lucide-svelte/icons/loader-2';
+import User from 'lucide-svelte/icons/user';
+import Users from 'lucide-svelte/icons/users';
+import X from 'lucide-svelte/icons/x';
+import { marked } from 'marked';
+import { SvelteSet } from 'svelte/reactivity';
 
 let { initialText = '', currentText = '', structuredData = null } = $props();
 
 let isEditing = $state(false);
 let isProcessing = $state(false);
+let apiError = $state(null);
+let errorDismissTimer = $state(null);
 
 // Configure marked for custom task lists
 marked.setOptions({
@@ -99,6 +103,7 @@ function parseMarkdownToStructure(md) {
 			const name = line.substring(2).trim();
 
 			let icon = 'briefcase';
+
 			for (const [kw, ic] of Object.entries(iconByKeywords)) {
 				if (name.toLowerCase().includes(kw)) {
 					icon = ic;
@@ -183,6 +188,7 @@ function parseMarkdownToStructure(md) {
 
 			// Extract Time
 			const timeMatch = title.match(/\[(.*?)\]/);
+
 			if (timeMatch) {
 				estimatedTime = timeMatch[1];
 				title = title.replace(`[${estimatedTime}]`, '').trim();
@@ -298,6 +304,7 @@ let renderedMarkdown = $derived.by(() => {
 	}
 
 	const rawHtml = marked.parse(textareaValue);
+
 	return DOMPurify.sanitize(rawHtml);
 });
 
@@ -331,6 +338,9 @@ async function handleStructure() {
 		return;
 	}
 
+	// Clear any previous error
+	clearError();
+
 	isProcessing = true;
 
 	try {
@@ -345,8 +355,18 @@ async function handleStructure() {
 		});
 
 		if (!response.ok) {
-			const error = await response.json();
-			console.error('Error:', error.error);
+			let errorMessage = 'Error desconocido del servidor';
+			
+			try {
+				const error = await response.json();
+				errorMessage = error.error || error.message || errorMessage;
+			} catch {
+				// If we can't parse the error response, use HTTP status
+				errorMessage = `Error del servidor: ${response.status} ${response.statusText}`;
+			}
+			
+			setError(errorMessage);
+
 			return;
 		}
 
@@ -358,10 +378,49 @@ async function handleStructure() {
 		// Update local structured data state
 		ajaxStructuredData = data.structuredData;
 	} catch (error) {
-		console.error('Failed to structure text:', error);
+		// Network errors, timeouts, etc.
+		if (error.name === 'AbortError') {
+			setError('La petición fue cancelada. Inténtalo de nuevo.');
+		} else if (error.name === 'TypeError') {
+			setError('No se pudo conectar con el servidor. Verifica tu conexión e inténtalo de nuevo.');
+		} else {
+			setError('No se pudo estructurar el texto. Inténtalo de nuevo.');
+		}
 	} finally {
 		isProcessing = false;
 	}
+}
+
+function setError(message) {
+	apiError = message;
+	
+	// Auto-dismiss after 8 seconds
+	if (errorDismissTimer) {
+		clearTimeout(errorDismissTimer);
+	}
+	
+	errorDismissTimer = setTimeout(() => {
+		apiError = null;
+		errorDismissTimer = null;
+	}, 8000);
+}
+
+function clearError() {
+	apiError = null;
+	
+	if (errorDismissTimer) {
+		clearTimeout(errorDismissTimer);
+		errorDismissTimer = null;
+	}
+}
+
+function dismissError() {
+	clearError();
+}
+
+function handleRetry() {
+	clearError();
+	handleStructure();
 }
 
 function handleReset() {
@@ -413,6 +472,7 @@ function findPrimaryTask(groups) {
 			}
 		}
 	}
+
 	return null;
 }
 </script>
@@ -652,21 +712,48 @@ Solo escribe."
 	</div>
 
 	<!-- Bottom bar -->
-	<div class="flex items-center justify-center gap-3 border-t border-white/[0.04] bg-black/15 px-[30px] py-[18px]">
-		<p class="text-[10px] italic text-[#4B5563]">Escribe a la izquierda. Estructura cuando quieras.</p>
-		<button
-			type="button"
-			class="ml-[10px] flex items-center gap-2 rounded bg-gradient-to-r from-[#00D4FF] to-[#00B8E6] px-9 py-[10px] text-[13px] font-bold tracking-[1px] uppercase text-[#0A0A0A] shadow-[0_0_25px_rgba(0,212,255,0.2)] transition-all hover:shadow-[0_0_35px_rgba(0,212,255,0.4)] disabled:cursor-not-allowed disabled:opacity-50"
-			onclick={handleStructure}
-			disabled={isProcessing || !textareaValue}
-		>
-			{#if isProcessing}
-				<Loader2 class="size-4 animate-spin" />
-				<span>Procesando...</span>
-			{:else}
-				<span>Estructurar</span>
-			{/if}
-		</button>
+	<div class="flex flex-col gap-3 border-t border-white/[0.04] bg-black/15 px-[30px] py-[18px]">
+		<!-- Error banner -->
+		{#if apiError}
+			<div class="flex items-start gap-3 rounded-lg border border-red-500/20 bg-red-500/10 p-3">
+				<AlertCircle class="mt-0.5 size-4 shrink-0 text-red-400" />
+				<div class="flex-1">
+					<p class="mb-2 text-[13px] text-red-200">{apiError}</p>
+					<button
+						type="button"
+						class="rounded bg-red-500/20 px-3 py-1 text-[11px] font-semibold text-red-300 transition-colors hover:bg-red-500/30"
+						onclick={handleRetry}
+					>
+						Reintentar
+					</button>
+				</div>
+				<button
+					type="button"
+					class="rounded p-1 text-red-400 transition-colors hover:bg-red-500/20 hover:text-red-300"
+					onclick={dismissError}
+					aria-label="Cerrar mensaje de error"
+				>
+					<X class="size-4" />
+				</button>
+			</div>
+		{/if}
+
+		<div class="flex items-center justify-center gap-3">
+			<p class="text-[10px] italic text-[#4B5563]">Escribe a la izquierda. Estructura cuando quieras.</p>
+			<button
+				type="button"
+				class="ml-[10px] flex items-center gap-2 rounded bg-gradient-to-r from-[#00D4FF] to-[#00B8E6] px-9 py-[10px] text-[13px] font-bold tracking-[1px] uppercase text-[#0A0A0A] shadow-[0_0_25px_rgba(0,212,255,0.2)] transition-all hover:shadow-[0_0_35px_rgba(0,212,255,0.4)] disabled:cursor-not-allowed disabled:opacity-50"
+				onclick={handleStructure}
+				disabled={isProcessing || !textareaValue}
+			>
+				{#if isProcessing}
+					<Loader2 class="size-4 animate-spin" />
+					<span>Procesando...</span>
+				{:else}
+					<span>Estructurar</span>
+				{/if}
+			</button>
+		</div>
 	</div>
 </div>
 

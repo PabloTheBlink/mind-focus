@@ -14,9 +14,9 @@
         SidebarMenuButton,
         SidebarMenuItem,
     } from '@/components/ui/sidebar';
+    import { mainNavItems, footerNavItems } from '@/lib/navigation';
     import { toUrl } from '@/lib/utils';
     import { dashboard } from '@/routes';
-    import { mainNavItems, footerNavItems } from '@/lib/navigation';
 
     let {
         children,

@@ -1,7 +1,7 @@
 <script>
 import { Link } from '@inertiajs/svelte';
-import Logo from './Logo.svelte';
 import { app } from '@/routes';
+import Logo from './Logo.svelte';
 
 let { children } = $props();
 </script>

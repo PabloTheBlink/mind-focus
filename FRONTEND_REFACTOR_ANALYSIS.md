@@ -280,10 +280,10 @@ External URLs (GitHub, Laravel docs) are **hardcoded as strings** in multiple pl
 
 ---
 
-## 9. MISSING ERROR HANDLING IN API CALLS
+## 9. MISSING ERROR HANDLING IN API CALLS ✅ COMPLETED
 
 ### Problem
-`InputArea.svelte` has minimal error handling for the `/api/structure` call:
+`InputArea.svelte` had minimal error handling for the `/api/structure` call:
 
 ```ts
 if (!response.ok) {
@@ -304,16 +304,24 @@ Issues:
 - Silent failures: user clicks "Estructurar" and nothing happens
 - Poor UX when API is unavailable or returns 500
 
-### Recommendation
-```svelte
-let apiError = $state<string | null>(null);
+### Status
+✅ **COMPLETED** - Comprehensive error handling implemented:
 
-// In catch block:
-apiError = 'No se pudo estructurar el texto. Inténtalo de nuevo.';
-// Show error banner in UI
-```
+**Improvements made:**
+1. Added `apiError` state variable to track error messages
+2. Created user-facing error banner with dismiss button and `aria-label` for accessibility
+3. Added `setError()` function with auto-dismiss after 8 seconds
+4. Improved error messages for different scenarios:
+   - Server errors: Parses JSON response or uses HTTP status
+   - Network errors: Differentiates between abort, connection failure, and generic errors
+   - User-friendly Spanish messages for all error types
+5. Added "Reintentar" button for quick retry without manual intervention
+6. Clear error state management with `clearError()` and `dismissError()` helpers
+7. Error banner uses proper styling with red color scheme matching the app's design
 
-Add a dismissible error banner in the bottom bar.
+**Before:** Silent `console.error` → **After:** Visible, actionable error banner with retry option
+
+Build verified successfully with `npm run build`.
 
 **Priority:** Medium
 

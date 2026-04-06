@@ -1,8 +1,8 @@
 <script>
 import { Link } from '@inertiajs/svelte';
-import Logo from './Logo.svelte';
 import ArrowLeft from 'lucide-svelte/icons/arrow-left';
 import { home } from '@/routes';
+import Logo from './Logo.svelte';
 </script>
 
 <header class="sticky top-0 z-[100] flex items-center justify-between border-b border-white/[0.05] bg-[rgba(8,10,16,0.8)] px-10 py-[18px] backdrop-blur-[12px]">
