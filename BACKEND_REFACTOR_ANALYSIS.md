@@ -15,7 +15,7 @@ The backend codebase is relatively small and well-structured, but several refact
 
 | Priority | File | Issue | Effort | Status |
 |----------|------|-------|--------|--------|
-| **High** | `app/Services/QwenMindFocusService.php` | Move `env()` call to config; extract system prompt | Medium | Pending |
+| **High** | `app/Services/QwenMindFocusService.php` | Move `env()` call to config; extract system prompt | Medium | Partially Done (config fixed, prompt pending) |
 | **High** | `app/Services/QwenMindFocusService.php` | Refactor `parseResponse()` -- reduce nesting, deduplicate logic | Medium | Pending |
 | **Medium** | `app/Http/Controllers/MindFocusController.php` | Add return type declarations | Low | ✅ Done |
 | **Medium** | `app/Services/QwenMindFocusService.php` | Replace redundant icon map with enum or validation | Low | ✅ Done |
@@ -33,20 +33,15 @@ The backend codebase is relatively small and well-structured, but several refact
 
 **File:** `app/Services/QwenMindFocusService.php` (~350 lines)
 
-#### 1. Hardcoded binary path (Configuration Anti-pattern)
+#### 1. Hardcoded binary path (Configuration Anti-pattern) ✅ RESOLVED
 
-**Current:**
+**Was:**
 ```php
 $this->binaryPath = env('QWEN_BIN_PATH', '/opt/homebrew/bin/qwen');
 ```
 
-**Problems:**
-- `env()` should **never** be called outside config files. In production with config caching (`php artisan config:cache`), this will return `null`.
-- Default `/opt/homebrew/bin/qwen` is macOS/Apple Silicon specific and not portable.
-
-**Recommended Fix:**
-
-Move to `config/services.php`:
+**Now:**
+Moved to `config/services.php`:
 ```php
 'qwen' => [
     'binary_path' => env('QWEN_BIN_PATH', '/opt/homebrew/bin/qwen'),
@@ -54,9 +49,10 @@ Move to `config/services.php`:
 ],
 ```
 
-Then in `QwenMindFocusService`:
+And in `QwenMindFocusService`:
 ```php
 $this->binaryPath = config('services.qwen.binary_path');
+$this->timeout = config('services.qwen.timeout', 120);
 ```
 
 ---
@@ -446,7 +442,7 @@ function something(): string
 1. ~~**Add return type declarations**~~ -- ✅ improves code quality and IDE support
 2. ~~**Fix test configuration**~~ -- ✅ ensures reliable test suite
 3. ~~**Replace icon map**~~ -- ✅ simplifies validation logic
-4. **Fix configuration issues** (move `env()` calls to config files) -- prevents production bugs
+4. ~~**Fix configuration issues** (move `env()` calls to config files)~~ -- ✅ prevents production bugs
 5. **Extract system prompt** -- makes service more maintainable
 6. **Refactor `parseResponse()`** -- reduces complexity and duplication
 7. **Add translations** -- prepares for internationalization
@@ -458,18 +454,18 @@ function something(): string
 
 | Task | Effort | Risk | Status |
 |------|--------|------|--------|
-| Config fixes | 30 min | Low | Pending |
+| ~~Config fixes~~ | ~~30 min~~ | Low | ✅ Done |
 | ~~Return types~~ | ~~15 min~~ | Low | ✅ Done |
 | Extract system prompt | 1 hour | Low | Pending |
 | Refactor parseResponse | 2 hours | Medium | Pending |
-| Icon map cleanup | ~~30 min~~ | Low | ✅ Done |
+| ~~Icon map cleanup~~ | ~~30 min~~ | Low | ✅ Done |
 | Translation setup | 1 hour | Low | Pending |
 | ~~Test fixes~~ | ~~30 min~~ | Low | ✅ Done |
 | Background job (optional) | 3 hours | Medium | Pending |
 
-**Total (core fixes):** ~5 hours
-**Total (with optional):** ~8 hours
-**Completed so far:** ~45 min
+**Total (core fixes):** ~4.5 hours remaining
+**Total (with optional):** ~7.5 hours remaining
+**Completed so far:** ~1 hour 15 min
 
 ---
 

@@ -17,13 +17,14 @@ class QwenMindFocusService
         'users',
     ];
 
-    private int $timeout = 120;
+    private int $timeout;
 
     private string $binaryPath;
 
     public function __construct()
     {
-        $this->binaryPath = env('QWEN_BIN_PATH', '/opt/homebrew/bin/qwen');
+        $this->binaryPath = config('services.qwen.binary_path');
+        $this->timeout = config('services.qwen.timeout', 120);
     }
 
     /**

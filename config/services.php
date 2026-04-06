@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'qwen' => [
+        'binary_path' => env('QWEN_BIN_PATH', '/opt/homebrew/bin/qwen'),
+        'timeout' => (int) env('QWEN_TIMEOUT', 120),
+    ],
+
 ];
