@@ -115,7 +115,6 @@
                                         href={toUrl(item.href)}
                                         class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent {url.whenCurrentUrl(
                                             item.href,
-                                            url.currentUrl,
                                             activeItemStyles,
                                             '',
                                         ) ?? ''}"
@@ -164,7 +163,6 @@
                                 <Link
                                     class="{navigationMenuTriggerStyle()} {url.whenCurrentUrl(
                                         item.href,
-                                        url.currentUrl,
                                         activeItemStyles,
                                         '',
                                     ) ?? ''} h-9 cursor-pointer px-4"
@@ -175,7 +173,7 @@
                                     {/if}
                                     {item.title}
                                 </Link>
-                                {#if url.isCurrentUrl(item.href, url.currentUrl)}
+                                {#if url.isCurrentUrl(item.href)}
                                     <div
                                         class="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"
                                     ></div>

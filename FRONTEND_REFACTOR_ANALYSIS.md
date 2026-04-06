@@ -439,7 +439,7 @@ Then use: `bg-brand-cyan`, `border-dark-subtle`, `text-muted`.
 ## 12. `currentUrlState` PASSING REDUNDANT PARAMETERS
 
 ### Problem
-The `currentUrlState()` methods require passing `url.currentUrl` as a parameter even though it's already available on the same object:
+The `currentUrlState()` methods required passing `url.currentUrl` as a parameter even though it's already available on the same object:
 
 ```svelte
 <!-- AppHeader.svelte -->
@@ -453,23 +453,28 @@ The `currentUrl` is already a derived state on the `url` object, making the seco
 - Potential for passing stale/wrong `currentUrl` value
 - Confusing developer experience
 
-### Recommendation
-Simplify the API to use internal state:
+### Status
+✅ **COMPLETED** - Refactored `currentUrl.svelte.ts` to use internal state. All methods now use `currentUrl` internally:
 
+**Before:**
 ```ts
-// Before
 isCurrentUrl(urlToCheck, currentUrl): boolean
-
-// After
-isCurrentUrl(urlToCheck): boolean  // uses this.currentUrl internally
+whenCurrentUrl(urlToCheck, currentUrl, ifTrue, ifFalse): T
 ```
 
-```svelte
-<!-- Usage becomes -->
-{url.whenCurrentUrl(item.href, activeItemStyles, '')}
+**After:**
+```ts
+isCurrentUrl(urlToCheck): boolean
+whenCurrentUrl(urlToCheck, ifTrue, ifFalse): T
 ```
 
-**Priority:** Low (internal API improvement)
+Updated all usages in:
+- `AppHeader.svelte`: 3 calls simplified
+- `NavMain.svelte`: 1 call simplified
+- `layouts/settings/Layout.svelte`: 1 call simplified
+- Build and TypeScript verification passed successfully.
+
+**Priority:** Low
 
 ---
 

@@ -27,7 +27,7 @@
             <SidebarMenuItem>
                 <SidebarMenuButton
                     asChild
-                    isActive={url.isCurrentUrl(item.href, url.currentUrl)}
+                    isActive={url.isCurrentUrl(item.href)}
                     tooltip={item.title}
                 >
                     {#snippet children(props)}

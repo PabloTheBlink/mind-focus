@@ -52,7 +52,6 @@
                         variant="ghost"
                         class="w-full justify-start {url.isCurrentUrl(
                             item.href,
-                            url.currentUrl,
                         )
                             ? 'bg-muted'
                             : ''}"

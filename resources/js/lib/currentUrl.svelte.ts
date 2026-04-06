@@ -6,15 +6,12 @@ export type CurrentUrlState = {
     readonly currentUrl: string;
     isCurrentUrl: (
         urlToCheck: NonNullable<LinkComponentBaseProps['href']>,
-        currentUrl: string,
     ) => boolean;
     isCurrentOrParentUrl: (
         urlToCheck: NonNullable<LinkComponentBaseProps['href']>,
-        currentUrl: string,
     ) => boolean;
     whenCurrentUrl: <TIfTrue, TIfFalse>(
         urlToCheck: NonNullable<LinkComponentBaseProps['href']>,
-        currentUrl: string,
         ifTrue: TIfTrue,
         ifFalse: TIfFalse,
     ) => TIfTrue | TIfFalse;
@@ -36,7 +33,6 @@ export function currentUrlState(): CurrentUrlState {
 
     function isCurrentUrl(
         urlToCheck: NonNullable<LinkComponentBaseProps['href']>,
-        current: string,
     ): boolean {
         const resolved = toUrl(urlToCheck);
 
@@ -44,12 +40,11 @@ export function currentUrlState(): CurrentUrlState {
             return false;
         }
 
-        return current === resolved;
+        return currentUrl === resolved;
     }
 
     function isCurrentOrParentUrl(
         urlToCheck: NonNullable<LinkComponentBaseProps['href']>,
-        current: string,
     ): boolean {
         const resolved = toUrl(urlToCheck);
 
@@ -57,16 +52,15 @@ export function currentUrlState(): CurrentUrlState {
             return false;
         }
 
-        return current.startsWith(resolved);
+        return currentUrl.startsWith(resolved);
     }
 
     function whenCurrentUrl<TIfTrue, TIfFalse>(
         urlToCheck: NonNullable<LinkComponentBaseProps['href']>,
-        current: string,
         ifTrue: TIfTrue,
         ifFalse: TIfFalse,
     ): TIfTrue | TIfFalse {
-        return isCurrentUrl(urlToCheck, current) ? ifTrue : ifFalse;
+        return isCurrentUrl(urlToCheck) ? ifTrue : ifFalse;
     }
 
     return {
