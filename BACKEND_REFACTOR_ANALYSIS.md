@@ -40,7 +40,7 @@ The codebase is relatively small and well-structured for a Laravel application. 
 | `app/Concerns/ProfileValidationRules.php:36-41` | **`emailRules()` has inline conditional** for the unique rule that's hard to read at a glance. | 🟠 Medium | Extract to `uniqueEmailRule(?int $userId): Rule` for clarity. |
 | `app/Services/QwenMindFocusService.php:14-19` | **`ALLOWED_ICONS` array** is hardcoded. If icons are used elsewhere in the app (likely, in the Svelte frontend), this should be a config or constant shared between frontend/backend. | 🟠 Medium | Move to `config('mindfocus.allowed_icons')` or a dedicated `App\Enums\Icon` enum. |
 | `app/Http/Middleware/HandleInertiaRequests.php:35` | **Sidebar state read from cookie** with magic string `'true'` and cookie name `'sidebar_state'`. | 🟠 Medium | Extract cookie name to a constant. Use `filter_var($value, FILTER_VALIDATE_BOOLEAN)` instead of string comparison. |
-| `routes/settings.php:17` | **Password update route named `user-password.update`** — inconsistent with other route naming (`profile.edit`, `profile.update`, `security.edit`). | 🟠 Medium | Rename to `security.password.update` or `password.update` for consistency. |
+| `routes/settings.php:17` | **Password update route named `user-password.update`** — inconsistent with other route naming (`profile.edit`, `profile.update`, `security.edit`). | 🟠 Medium | Rename to `security.password.update` or `password.update` for consistency. ✅ Done — renamed to `security.password.update` (`password.update` conflicted with Fortify). |
 | `app/Http/Controllers/MindFocusController.php` | **No tests exist** for the main application feature (text structuring via Qwen). Only scaffold tests exist. | 🟠 Medium | Add feature tests for `structure()` and `structureApi()` endpoints, and unit tests for `QwenMindFocusService::parseResponse()` with mocked CLI responses. |
 
 ---
@@ -85,7 +85,7 @@ These take <5 minutes each:
    });
    ```
 
-2. **Fix route naming consistency**: Rename `user-password.update` to `password.update`.
+2. ~~**Fix route naming consistency**: Rename `user-password.update` to `password.update`.~~ ✅ Done — renamed to `security.password.update` (avoided Fortify conflict)
 
 3. ~~**Remove commented `MustVerifyEmail`** from `User.php`.~~ ✅ Done
 
