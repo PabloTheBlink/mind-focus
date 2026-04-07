@@ -1,482 +1,109 @@
-# Backend Refactoring Analysis - Mind Focus
+# Backend Refactoring Analysis
 
-**Date:** 6 April 2026  
-**Project:** mind-focus (Laravel 13 + Inertia.js + Svelte 5)
+> Generated on: martes, 7 de abril de 2026
+> Project: mind-focus (Laravel 13 + Inertia Svelte)
 
----
+## Summary
 
-## Executive Summary
-
-The backend codebase is relatively small and well-structured, but several refactoring opportunities exist ranging from critical configuration issues to minor code style improvements. The most significant concerns are in `QwenMindFocusService`, which handles external AI CLI integration.
+The codebase is relatively small and well-structured for a Laravel application. It follows many Laravel best practices: FormRequest validation, service layer separation, traits for reusable validation rules, and proper middleware usage. However, there are several areas worth addressing — particularly around the `QwenMindFocusService` complexity, route exposure of the AI service, and a few architectural inconsistencies.
 
 ---
 
-## Priority Matrix
+## Critical Issues (Fix Now)
 
-| Priority | File | Issue | Effort | Status |
-|----------|------|-------|--------|--------|
-| **High** | `app/Services/QwenMindFocusService.php` | Move `env()` call to config; extract system prompt | Medium | ✅ Done |
-| **High** | `app/Services/QwenMindFocusService.php` | Refactor `parseResponse()` -- reduce nesting, deduplicate logic | Medium | ✅ Done |
-| **Medium** | `app/Http/Controllers/MindFocusController.php` | Add return type declarations | Low | ✅ Done |
-| **Medium** | `app/Services/QwenMindFocusService.php` | Replace redundant icon map with enum or validation | Low | ✅ Done |
-| **Medium** | `app/Http/Controllers/Settings/SecurityController.php` | Simplify nested ternary in `middleware()` | Low | ✅ Done |
-| **Low** | `config/services.php` | Add `qwen` configuration section | Low | ✅ Done |
-| **Low** | `app/Http/Controllers/MindFocusController.php` | Extract validation to Form Request; use translations | Low | ✅ Done |
-| **Low** | `tests/Pest.php` | Uncomment `RefreshDatabase` or document why disabled | Low | ✅ Done |
-| **Info** | `app/Services/QwenMindFocusService.php` | Consider queuing CLI call as background job | High | Pending |
+| File | Issue | Severity | Recommendation |
+|------|-------|----------|----------------|
+| `app/Http/Controllers/MindFocusController.php` | **No auth middleware on structure endpoints** — `POST /app/structure` and `POST /api/structure` are publicly accessible, allowing anyone to trigger expensive Qwen CLI calls. | 🔴 Critical | Add `'auth'` or `'throttle'` middleware to these routes. At minimum, add rate limiting heavier than the default. |
+| `app/Services/QwenMindFocusService.php:73-102` | **Process execution with user input** — While `escapeshellarg()` is used, the service executes a CLI binary with user-supplied text. If the binary path or behavior changes, this could be risky. | 🔴 Critical | Add input length validation (already in FormRequest — good), but also consider adding a whitelist of allowed characters or sanitization layer. Log all invocations for auditability. |
+| `app/Http/Controllers/Settings/SecurityController.php:54` | **Password saved without hashing awareness** — `$request->user()->update(['password' => $request->password])` relies on the User model's `password` cast being `'hashed'`, which is correct but not immediately obvious to a reader. | 🔴 Critical | Add a comment or use `$request->user()->forceFill(['password' => $request->password])->save()` for clarity. The current approach works due to the `#[Hidden]` and cast, but could be more explicit. |
 
 ---
 
-## Detailed Findings
+## High Priority
 
-### 🔴 HIGH: QwenMindFocusService -- Too Many Responsibilities
-
-**File:** `app/Services/QwenMindFocusService.php` (~350 lines)
-
-#### 1. Hardcoded binary path (Configuration Anti-pattern) ✅ RESOLVED
-
-**Was:**
-```php
-$this->binaryPath = env('QWEN_BIN_PATH', '/opt/homebrew/bin/qwen');
-```
-
-**Now:**
-Moved to `config/services.php`:
-```php
-'qwen' => [
-    'binary_path' => env('QWEN_BIN_PATH', '/opt/homebrew/bin/qwen'),
-    'timeout' => (int) env('QWEN_TIMEOUT', 120),
-],
-```
-
-And in `QwenMindFocusService`:
-```php
-$this->binaryPath = config('services.qwen.binary_path');
-$this->timeout = config('services.qwen.timeout', 120);
-```
+| File | Issue | Severity | Recommendation |
+|------|-------|----------|----------------|
+| `app/Services/QwenMindFocusService.php` | **God class — 280+ lines** doing CLI execution, JSON parsing, markdown generation, fallback logic, and data normalization. Single responsibility violation. | 🟡 High | Extract into: (1) `QwenClient` for CLI execution, (2) `ResponseParser` for JSON parsing/normalization, (3) `MarkdownGenerator` for markdown output. |
+| `app/Services/QwenMindFocusService.php:105-187` | **`parseResponse()` is 80+ lines** with deep nesting (3-4 levels) handling JSON extraction, field normalization, icon validation, and primary item logic. | 🟡 High | Extract methods: `extractJson()`, `normalizeGroups()`, `validateIcon()`, `ensurePrimaryItems()`. Each should be its own private method. |
+| `app/Services/QwenMindFocusService.php:192-230` | **`generateMarkdown()` duplicates logic** — the task vs note rendering branches are nearly identical (loop items, build line, append description). | 🟡 High | Extract a `renderItem(array $item, string $type): string` method to eliminate duplication between the task and note branches. |
+| `routes/web.php:11-12` | **Two endpoints doing the same thing** — `/app/structure` returns Inertia response, `/api/structure` returns JSON. Both call the same service with the same validation. | 🟡 High | Consider if both are needed. If the API endpoint is for external consumers, move it to `routes/api.php` and apply API-specific middleware (token auth, stricter rate limits). |
+| `app/Services/QwenMindFocusService.php:238-273` | **`fallbackStructure()` marks first item as `'urgente'`** arbitrarily. This is a magic business rule hardcoded in a service method. | 🟡 High | Extract the priority assignment logic into a constant or config value. Consider whether "first item = urgent" is the right heuristic — it may produce noise. |
 
 ---
 
-#### 2. Massive hardcoded system prompt (~150 lines) ✅ RESOLVED
+## Medium Priority
 
-**Was:**
-The `getSystemPrompt()` method returned a 150+ line Spanish-language prompt embedded as a heredoc.
-
-**Now:**
-Extracted to external resource file:
-```
-resources/prompts/mindfocus_system_prompt.md
-```
-
-Loaded in service:
-```php
-private function getSystemPrompt(): string
-{
-    $promptPath = resource_path('prompts/mindfocus_system_prompt.md');
-
-    if (! file_exists($promptPath)) {
-        throw new \RuntimeException("System prompt file not found: {$promptPath}");
-    }
-
-    $prompt = file_get_contents($promptPath);
-
-    if ($prompt === false) {
-        throw new \RuntimeException("Failed to read system prompt file: {$promptPath}");
-    }
-
-    return $prompt;
-}
-```
-
-**Benefits:**
-- Makes the service class more readable and maintainable.
-- Easy to version control and A/B test different prompts.
-- Separation of concerns: code logic vs. prompt content.
+| File | Issue | Severity | Recommendation |
+|------|-------|----------|----------------|
+| `app/Http/Controllers/MindFocusController.php:16-25` | **`$result` variable name** is vague. The method calls `structure()` and stores the result, then destructures it manually. | 🟠 Medium | Rename to `$structuredData` or use `['markdown' => $markdown, 'groups' => $groups] = $mindFocusService->structure($text);` for clarity. |
+| `app/Http/Controllers/Settings/SecurityController.php:20-30` | **`middleware()` method has early returns** that make it unclear when password confirmation is actually required. The logic reads bottom-up. | 🟠 Medium | Flip the condition: `if (! Features::canManageTwoFactorAuthentication() || ! Features::optionEnabled(...)) { return []; }` and then `return [new Middleware(...)]`. |
+| `app/Concerns/ProfileValidationRules.php:36-41` | **`emailRules()` has inline conditional** for the unique rule that's hard to read at a glance. | 🟠 Medium | Extract to `uniqueEmailRule(?int $userId): Rule` for clarity. |
+| `app/Services/QwenMindFocusService.php:14-19` | **`ALLOWED_ICONS` array** is hardcoded. If icons are used elsewhere in the app (likely, in the Svelte frontend), this should be a config or constant shared between frontend/backend. | 🟠 Medium | Move to `config('mindfocus.allowed_icons')` or a dedicated `App\Enums\Icon` enum. |
+| `app/Http/Middleware/HandleInertiaRequests.php:35` | **Sidebar state read from cookie** with magic string `'true'` and cookie name `'sidebar_state'`. | 🟠 Medium | Extract cookie name to a constant. Use `filter_var($value, FILTER_VALIDATE_BOOLEAN)` instead of string comparison. |
+| `routes/settings.php:17` | **Password update route named `user-password.update`** — inconsistent with other route naming (`profile.edit`, `profile.update`, `security.edit`). | 🟠 Medium | Rename to `security.password.update` or `password.update` for consistency. |
+| `app/Http/Controllers/MindFocusController.php` | **No tests exist** for the main application feature (text structuring via Qwen). Only scaffold tests exist. | 🟠 Medium | Add feature tests for `structure()` and `structureApi()` endpoints, and unit tests for `QwenMindFocusService::parseResponse()` with mocked CLI responses. |
 
 ---
 
-#### 3. Missing PHPDoc for array return type
+## Low Priority / Nice to Have
 
-**Current:**
-```php
-public function structure(string $text): array
-```
-
-**Recommended Fix:**
-```php
-/**
- * @return array{
- *     groups: array<int, array{
- *         id: int,
- *         name: string,
- *         icon: string,
- *         color: string,
- *         isPrimary: bool,
- *         subgroups: array<int, array{
- *             id: int,
- *             name: string,
- *             icon: string,
- *             color: string,
- *             items: array<int, array{
- *                 id: int,
- *                 title: string,
- *                 description?: string,
- *                 isPrimary: bool
- *             }>
- *         }>
- *     }>,
- *     markdown: string
- * }
- */
-public function structure(string $text): array
-```
+| File | Issue | Severity | Recommendation |
+|------|-------|----------|----------------|
+| `app/Services/QwenMindFocusService.php:14-19` | **`ALLOWED_ICONS` not exhaustive** — missing common icons like `flag`, `target`, `calendar`, `tag`. | 🟢 Low | Review if the icon list matches what the frontend actually uses. |
+| `app/Http/Controllers/Controller.php` | **Empty base controller** — no shared behavior. Could be removed in favor of direct controller classes. | 🟢 Low | This is a Laravel convention, so it's fine to keep, but note that it adds no value currently. |
+| `config/services.php` | **Qwen config has timeout cast** `(int) env('QWEN_TIMEOUT', 120)` — the cast is redundant since `env()` returns string and `(int)` on a non-numeric string returns `0`. | 🟢 Low | Use `env('QWEN_TIMEOUT', 120)` and cast in the service constructor, or use `config('services.qwen.timeout', 120)` with a default. |
+| `lang/es/mindfocus.php` | **Validation messages in Spanish** but the app's Qwen service responses (system prompt, fallback text) are also in Spanish. Consider if the service should be locale-aware. | 🟢 Low | Inject `app()->getLocale()` into the service and load locale-specific prompts/fallbacks. |
+| `app/Models/User.php` | ~~**Commented-out `MustVerifyEmail`**~~ | 🟢 Low | ✅ Done — removed the commented import. |
 
 ---
 
-#### 4. Complex nested loops in `parseResponse()`
+## Architecture Observations
 
-**Current:**
-- 4+ levels of nested `foreach` loops.
-- Logic for setting default `isPrimary` item is **duplicated** across two nearly identical code blocks (lines ~185-205 for groups and subgroups).
+1. **Service Layer is Thin but Growing**: The `QwenMindFocusService` is the only custom service, and it's doing too much. As features grow, consider a proper service layer pattern with interfaces for testability.
 
-**Recommended Fix:**
+2. **No Repository or Data Mapper Layer**: Currently, the app uses Eloquent directly, which is fine for this scale. If complex queries emerge, consider repository pattern.
 
-Extract primary-fallback logic into dedicated method:
-```php
-private function ensurePrimaryItem(array &$items): void
-{
-    if (empty($items)) {
-        return;
-    }
+3. **Fortify Integration is Clean**: The Fortify setup follows Laravel conventions with custom Actions, proper middleware, and Inertia views. No issues here.
 
-    $hasPrimary = collect($items)->contains('isPrimary', true);
-    
-    if (! $hasPrimary) {
-        $items[0]['isPrimary'] = true;
-    }
-}
-```
+4. **Missing API Versioning**: If `/api/structure` is intended for external consumption, consider API versioning (`/api/v1/structure`) and token-based authentication (Laravel Sanctum).
 
-Then in `parseResponse()`:
-```php
-// After parsing groups
-$this->ensurePrimaryItem($groups);
+5. **No Event/Listener Pattern**: The app doesn't use Laravel's event system. If features like "send notification when structuring completes" or "log usage analytics" are added, events would be the right approach.
 
-// After parsing subgroups
-foreach ($groups as &$group) {
-    $this->ensurePrimaryItem($group['subgroups']);
-}
-```
+6. **Cookie-Based State**: Sidebar state and appearance are stored in cookies. For a logged-in app, consider storing user preferences in the database instead.
 
 ---
 
-#### 5. Icon map is redundant ✅ RESOLVED
+## Quick Wins
 
-**Was:**
-```php
-$iconMap = [
-    'briefcase' => 'briefcase',
-    'user' => 'user',
-    'users' => 'users',
-    // ... 10+ identical key-value pairs
-];
-```
+These take <5 minutes each:
 
-**Now:**
-```php
-private const ALLOWED_ICONS = [
-    'briefcase', 'user', 'heart', 'lightbulb',
-    'dollar-sign', 'book', 'home', 'users',
-];
+1. **Add auth middleware to structure routes** in `routes/web.php`:
+   ```php
+   Route::middleware(['auth'])->group(function () {
+       Route::post('app/structure', [MindFocusController::class, 'structure'])->name('app.structure');
+       Route::post('api/structure', [MindFocusController::class, 'structureApi'])->name('api.structure');
+   });
+   ```
 
-$icon = in_array($group['icon'] ?? null, self::ALLOWED_ICONS, true)
-    ? $group['icon']
-    : 'briefcase';
-```
+2. **Rename `$result` to `$structuredData`** in `MindFocusController.php`.
+
+3. **Fix route naming consistency**: Rename `user-password.update` to `password.update`.
+
+4. ~~**Remove commented `MustVerifyEmail`** from `User.php`.~~ ✅ Done
+
+5. **Add PHPDoc to `SecurityController::update()`** clarifying that the password cast handles hashing via the model attribute.
+
+6. **Run `vendor/bin/pint`** to ensure all PHP files match the project's code style.
 
 ---
 
-#### 6. Uses `\Log` facade directly
-
-**Current:**
-```php
-\Log::error('Qwen CLI error (MindFocus)', [...]);
-```
-
-**Recommended Fix:**
-```php
-logger()->error('Qwen CLI error (MindFocus)', [...]);
-```
-
-Or inject `Psr\Log\LoggerInterface` via constructor for better testability.
-
----
-
-#### 7. Synchronous CLI call blocks request
-
-**Current:**
-```php
-$process = new Process([
-    $this->binaryPath,
-    'structure',
-    $text,
-]);
-
-$process->setTimeout(120);
-$process->run();
-```
-
-**Problem:** 120-second synchronous execution will timeout HTTP requests in production.
-
-**Recommended Fix:**
-
-For production use, queue this as a background job:
-```php
-// Create job class
-php artisan make:job StructureMindFocusText
-
-// In job:
-public function handle(QwenMindFocusService $service): void
-{
-    $result = $service->structure($this->text);
-    // Store result, notify user, etc.
-}
-```
-
-Controller then dispatches:
-```php
-StructureMindFocusText::dispatch($text, $request->user());
-```
-
----
-
-#### 8. `generateMarkdown()` duplicates logic
-
-**Problem:** Markdown generation for tasks vs notes shares nearly identical structure (loop items, append title, append description as blockquote).
-
-**Recommended Fix:**
-
-Extract common pattern:
-```php
-private function formatItemAsMarkdown(array $item): string
-{
-    $markdown = "### {$item['title']}\n";
-    
-    if (!empty($item['description'])) {
-        $markdown .= "> {$item['description']}\n";
-    }
-    
-    return $markdown;
-}
-```
-
----
-
-### 🟡 MEDIUM: MindFocusController -- Missing Return Types
-
-**File:** `app/Http/Controllers/MindFocusController.php`
-
-**Current:**
-```php
-public function structure(Request $request, QwenMindFocusService $mindFocusService)
-public function structureApi(Request $request, QwenMindFocusService $mindFocusService)
-```
-
-**Recommended Fix:**
-```php
-use Inertia\Response;
-use Illuminate\Http\JsonResponse;
-
-public function structure(Request $request, QwenMindFocusService $mindFocusService): Response
-public function structureApi(Request $request, QwenMindFocusService $mindFocusService): JsonResponse
-```
-
-**Additional:** Both methods duplicate empty-text validation. Extract to Form Request:
-```php
-php artisan make:request StructureTextRequest
-```
-
-```php
-// app/Http/Requests/StructureTextRequest.php
-public function rules(): array
-{
-    return [
-        'text' => ['required', 'string', 'min:10'],
-    ];
-}
-
-public function messages(): array
-{
-    return [
-        'text.required' => 'El texto no puede estar vacío.',
-        'text.min' => 'El texto debe tener al menos 10 caracteres.',
-    ];
-}
-```
-
----
-
-### 🟡 MEDIUM: SecurityController nested ternary ✅ RESOLVED
-
-**File:** `app/Http/Controllers/Settings/SecurityController.php`
-
-**Was:**
-```php
-public static function middleware(): array
-{
-    return Features::canManageTwoFactorAuthentication()
-        && Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword')
-            ? [new Middleware('password.confirm', only: ['edit'])]
-            : [];
-}
-```
-
-**Now:**
-```php
-public static function middleware(): array
-{
-    if (! Features::canManageTwoFactorAuthentication()) {
-        return [];
-    }
-
-    if (! Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword')) {
-        return [];
-    }
-
-    return [new Middleware('password.confirm', only: ['edit'])];
-}
-```
-
-**Benefits:**
-- Improved readability with early returns.
-- Easier to understand and maintain.
-- Follows common Laravel conventions.
-
----
-
-### 🟢 LOW: Spanish error messages hardcoded
-
-**File:** `app/Http/Controllers/MindFocusController.php`
-
-**Current:**
-```php
-return back()->with('error', 'El texto no puede estar vacío.');
-```
-
-**Recommended Fix:**
-
-Use Laravel's translation system:
-```php
-return back()->with('error', __('mindfocus.text_required'));
-```
-
-Create `lang/es/mindfocus.php`:
-```php
-return [
-    'text_required' => 'El texto no puede estar vacío.',
-];
-```
-
----
-
-### 🟢 LOW: Missing config entry for Qwen service
-
-**File:** `config/services.php`
-
-**Recommended Addition:**
-```php
-'qwen' => [
-    'binary_path' => env('QWEN_BIN_PATH', '/opt/homebrew/bin/qwen'),
-    'timeout' => (int) env('QWEN_TIMEOUT', 120),
-],
-```
-
----
-
-### 🟢 LOW: Test configuration issues
-
-**File:** `tests/Pest.php`
-
-#### 1. RefreshDatabase commented out
-
-**Current:**
-```php
-pest()->extend(TestCase::class)
- // ->use(RefreshDatabase::class)
-    ->in('Feature');
-```
-
-**Action Required:**
-- If tests modify database, uncomment `RefreshDatabase` to prevent data leakage between test runs.
-- If tests are truly stateless, add comment explaining why disabled.
-
-#### 2. Dead helper function
-
-**Current:**
-```php
-function something(): string
-{
-    return 'something';
-}
-```
-
-**Action:** Remove this function -- it serves no purpose.
-
----
-
-## Architecture Assessment
-
-### ✅ Strengths
-- Clear separation of concerns (controllers, services, actions).
-- Form Request classes for validation.
-- Comprehensive test coverage (14 test files).
-- Proper use of Fortify for authentication.
-- No N+1 query issues detected (minimal Eloquent usage).
-- No significant code duplication across controllers.
-
-### ⚠️ Areas for Improvement
-- Single service class handling too many responsibilities.
-- Configuration not following Laravel best practices (`env()` outside config files).
-- Missing type declarations in some public methods.
-- Synchronous external process execution may not scale.
-
----
-
-## Recommended Refactoring Order
-
-1. ~~**Add return type declarations**~~ -- ✅ improves code quality and IDE support
-2. ~~**Fix test configuration**~~ -- ✅ ensures reliable test suite
-3. ~~**Replace icon map**~~ -- ✅ simplifies validation logic
-4. ~~**Fix configuration issues** (move `env()` calls to config files)~~ -- ✅ prevents production bugs
-5. ~~**Extract system prompt**~~ -- ✅ makes service more maintainable
-6. ~~**Refactor `parseResponse()`**~~ -- ✅ reduces complexity and duplication
-7. ~~**Simplify SecurityController ternary**~~ -- ✅ improves readability
-8. ~~**Add translations**~~ -- ✅ prepares for internationalization
-9. **Consider background job** -- for production scalability
-
----
-
-## Estimated Effort
-
-| Task | Effort | Risk | Status |
-|------|--------|------|--------|
-| ~~Config fixes~~ | ~~30 min~~ | Low | ✅ Done |
-| ~~Return types~~ | ~~15 min~~ | Low | ✅ Done |
-| ~~Extract system prompt~~ | ~~1 hour~~ | Low | ✅ Done |
-| ~~Refactor parseResponse~~ | ~~2 hours~~ | Medium | ✅ Done |
-| ~~Icon map cleanup~~ | ~~30 min~~ | Low | ✅ Done |
-| ~~SecurityController ternary~~ | ~~15 min~~ | Low | ✅ Done |
-| ~~Translation setup~~ | ~~1 hour~~ | ~~Low~~ | ✅ Done |
-| Background job (optional) | 3 hours | Medium | Pending |
-
-**Total (core fixes):** ~0 remaining
-**Total (with optional):** ~3 hours remaining
-**Completed so far:** ~3 hours 30 min
-
----
-
-## Notes
-
-- **No N+1 query issues detected:** The codebase is small with minimal database querying. The only model queries are straightforward single-model lookups via `$request->user()`.
-- **Test coverage is adequate:** 14 test files cover authentication, registration, profile updates, security settings, and dashboard access.
-- **No code duplication across controllers:** Controllers are small and follow standard Laravel conventions.
+## Stats
+
+- **Files analyzed**: 20 PHP files (excluding config, migrations, and seeders)
+- **Issues found**: 21 (Critical: 3, High: 6, Medium: 7, Low: 5)
+- **Top files to refactor**:
+  1. `app/Services/QwenMindFocusService.php` — 10 issues (complexity, duplication, security)
+  2. `app/Http/Controllers/MindFocusController.php` — 3 issues (auth, naming, tests)
+  3. `app/Http/Controllers/Settings/SecurityController.php` — 2 issues (middleware clarity, password update)
+  4. `routes/web.php` — 2 issues (auth middleware, route organization)
+  5. `app/Concerns/ProfileValidationRules.php` — 1 issue (readability)
