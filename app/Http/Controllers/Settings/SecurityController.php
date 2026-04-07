@@ -51,6 +51,9 @@ class SecurityController extends Controller implements HasMiddleware
 
     /**
      * Update the user's password.
+     *
+     * Note: The password is automatically hashed before saving due to the
+     * 'hashed' cast on the User model's password attribute.
      */
     public function update(PasswordUpdateRequest $request): RedirectResponse
     {

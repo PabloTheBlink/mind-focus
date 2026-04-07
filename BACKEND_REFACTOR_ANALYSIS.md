@@ -89,7 +89,7 @@ These take <5 minutes each:
 
 3. ~~**Remove commented `MustVerifyEmail`** from `User.php`.~~ ✅ Done
 
-4. **Add PHPDoc to `SecurityController::update()`** clarifying that the password cast handles hashing via the model attribute.
+4. ~~**Add PHPDoc to `SecurityController::update()`**~~ ✅ Done — added clarification about password hashing via model cast
 
 5. **Run `vendor/bin/pint`** to ensure all PHP files match the project's code style.
 
@@ -98,10 +98,10 @@ These take <5 minutes each:
 ## Stats
 
 - **Files analyzed**: 20 PHP files (excluding config, migrations, and seeders)
-- **Issues found**: 21 (Critical: 3, High: 6, Medium: 7, Low: 5)
+- **Issues found**: 20 (Critical: 3, High: 6, Medium: 7, Low: 4)
 - **Top files to refactor**:
   1. `app/Services/QwenMindFocusService.php` — 10 issues (complexity, duplication, security)
   2. `app/Http/Controllers/MindFocusController.php` — 3 issues (auth, naming, tests)
-  3. `app/Http/Controllers/Settings/SecurityController.php` — 2 issues (middleware clarity, password update)
+  3. `app/Http/Controllers/Settings/SecurityController.php` — 1 issue (middleware clarity)
   4. `routes/web.php` — 2 issues (auth middleware, route organization)
   5. `app/Concerns/ProfileValidationRules.php` — 1 issue (readability)
