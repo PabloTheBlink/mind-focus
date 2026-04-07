@@ -15,13 +15,13 @@ class MindFocusController extends Controller
     {
         $text = $request->input('text', '');
 
-        $result = $mindFocusService->structure($text);
-        $structuredMarkdown = $result['markdown'] ?? $text;
+        $structureResult = $mindFocusService->structure($text);
+        $structuredMarkdown = $structureResult['markdown'] ?? $text;
 
         return Inertia::render('AppScreen', [
             'text' => $structuredMarkdown,
             'currentText' => $structuredMarkdown,
-            'structuredData' => $result['groups'] ?? [],
+            'structuredData' => $structureResult['groups'] ?? [],
         ]);
     }
 
@@ -29,11 +29,11 @@ class MindFocusController extends Controller
     {
         $text = $request->input('text', '');
 
-        $result = $mindFocusService->structure($text);
+        $structureResult = $mindFocusService->structure($text);
 
         return response()->json([
-            'markdown' => $result['markdown'] ?? $text,
-            'structuredData' => $result['groups'] ?? [],
+            'markdown' => $structureResult['markdown'] ?? $text,
+            'structuredData' => $structureResult['groups'] ?? [],
         ]);
     }
 }

@@ -35,7 +35,7 @@ The codebase is relatively small and well-structured for a Laravel application. 
 
 | File | Issue | Severity | Recommendation |
 |------|-------|----------|----------------|
-| `app/Http/Controllers/MindFocusController.php:16-25` | **`$result` variable name** is vague. The method calls `structure()` and stores the result, then destructures it manually. | 🟠 Medium | Rename to `$structuredData` or use `['markdown' => $markdown, 'groups' => $groups] = $mindFocusService->structure($text);` for clarity. |
+| `app/Http/Controllers/MindFocusController.php:16-25` | **Method could be clearer** — the destructuring of `$result` keys is manual and repetitive. | 🟠 Medium | Use `['markdown' => $markdown, 'groups' => $groups] = $mindFocusService->structure($text);` for clarity, or rename the variable to `$structureResult`. ✅ Done — renamed to `$structureResult`. |
 | `app/Http/Controllers/Settings/SecurityController.php:20-30` | **`middleware()` method has early returns** that make it unclear when password confirmation is actually required. The logic reads bottom-up. | 🟠 Medium | Flip the condition: `if (! Features::canManageTwoFactorAuthentication() || ! Features::optionEnabled(...)) { return []; }` and then `return [new Middleware(...)]`. |
 | `app/Concerns/ProfileValidationRules.php:36-41` | **`emailRules()` has inline conditional** for the unique rule that's hard to read at a glance. | 🟠 Medium | Extract to `uniqueEmailRule(?int $userId): Rule` for clarity. |
 | `app/Services/QwenMindFocusService.php:14-19` | **`ALLOWED_ICONS` array** is hardcoded. If icons are used elsewhere in the app (likely, in the Svelte frontend), this should be a config or constant shared between frontend/backend. | 🟠 Medium | Move to `config('mindfocus.allowed_icons')` or a dedicated `App\Enums\Icon` enum. |
@@ -85,15 +85,13 @@ These take <5 minutes each:
    });
    ```
 
-2. **Rename `$result` to `$structuredData`** in `MindFocusController.php`.
+2. **Fix route naming consistency**: Rename `user-password.update` to `password.update`.
 
-3. **Fix route naming consistency**: Rename `user-password.update` to `password.update`.
+3. ~~**Remove commented `MustVerifyEmail`** from `User.php`.~~ ✅ Done
 
-4. ~~**Remove commented `MustVerifyEmail`** from `User.php`.~~ ✅ Done
+4. **Add PHPDoc to `SecurityController::update()`** clarifying that the password cast handles hashing via the model attribute.
 
-5. **Add PHPDoc to `SecurityController::update()`** clarifying that the password cast handles hashing via the model attribute.
-
-6. **Run `vendor/bin/pint`** to ensure all PHP files match the project's code style.
+5. **Run `vendor/bin/pint`** to ensure all PHP files match the project's code style.
 
 ---
 
