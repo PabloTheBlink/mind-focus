@@ -20,8 +20,8 @@ The backend codebase is relatively small and well-structured, but several refact
 | **Medium** | `app/Http/Controllers/MindFocusController.php` | Add return type declarations | Low | ✅ Done |
 | **Medium** | `app/Services/QwenMindFocusService.php` | Replace redundant icon map with enum or validation | Low | ✅ Done |
 | **Medium** | `app/Http/Controllers/Settings/SecurityController.php` | Simplify nested ternary in `middleware()` | Low | ✅ Done |
-| **Low** | `app/Http/Controllers/MindFocusController.php` | Extract validation to Form Request; use translations | Low | Pending |
-| **Low** | `config/services.php` | Add `qwen` configuration section | Low | Pending |
+| **Low** | `config/services.php` | Add `qwen` configuration section | Low | ✅ Done |
+| **Low** | `app/Http/Controllers/MindFocusController.php` | Extract validation to Form Request; use translations | Low | ✅ Done |
 | **Low** | `tests/Pest.php` | Uncomment `RefreshDatabase` or document why disabled | Low | ✅ Done |
 | **Info** | `app/Services/QwenMindFocusService.php` | Consider queuing CLI call as background job | High | Pending |
 
@@ -451,7 +451,7 @@ function something(): string
 5. ~~**Extract system prompt**~~ -- ✅ makes service more maintainable
 6. ~~**Refactor `parseResponse()`**~~ -- ✅ reduces complexity and duplication
 7. ~~**Simplify SecurityController ternary**~~ -- ✅ improves readability
-8. **Add translations** -- prepares for internationalization
+8. ~~**Add translations**~~ -- ✅ prepares for internationalization
 9. **Consider background job** -- for production scalability
 
 ---
@@ -466,12 +466,12 @@ function something(): string
 | ~~Refactor parseResponse~~ | ~~2 hours~~ | Medium | ✅ Done |
 | ~~Icon map cleanup~~ | ~~30 min~~ | Low | ✅ Done |
 | ~~SecurityController ternary~~ | ~~15 min~~ | Low | ✅ Done |
-| Translation setup | 1 hour | Low | Pending |
+| ~~Translation setup~~ | ~~1 hour~~ | ~~Low~~ | ✅ Done |
 | Background job (optional) | 3 hours | Medium | Pending |
 
-**Total (core fixes):** ~1 hour remaining
-**Total (with optional):** ~4 hours remaining
-**Completed so far:** ~2 hours 30 min
+**Total (core fixes):** ~0 remaining
+**Total (with optional):** ~3 hours remaining
+**Completed so far:** ~3 hours 30 min
 
 ---
 
