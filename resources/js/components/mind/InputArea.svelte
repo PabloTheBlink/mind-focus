@@ -484,28 +484,28 @@ function findPrimaryTask(groups) {
 
 <div class="flex h-full w-full flex-col">
 	<!-- Top bar -->
-	<div class="flex shrink-0 items-center justify-between border-b border-white/[0.04] bg-black/20 px-[30px] py-[15px]">
-		<div class="flex gap-[30px]">
+	<div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-white/[0.04] bg-black/20 px-4 py-3 sm:px-6 sm:py-[15px] md:px-[30px]">
+		<div class="flex flex-wrap gap-4 sm:gap-[30px]">
 			<div class="flex items-center gap-2">
 				<div class="h-[6px] w-[6px] rounded-full bg-[#00D4FF]"></div>
-				<span class="text-[11px] font-semibold tracking-[2px] text-[#6B7280] uppercase">Tu mente</span>
+				<span class="text-[10px] font-semibold tracking-[2px] text-[#6B7280] uppercase sm:text-[11px]">Tu mente</span>
 			</div>
 			<div class="flex items-center gap-2">
 				<div class="h-[6px] w-[6px] rounded-full bg-[#A78BFA]"></div>
-				<span class="text-[11px] font-semibold tracking-[2px] text-[#6B7280] uppercase">Estructurado</span>
+				<span class="text-[10px] font-semibold tracking-[2px] text-[#6B7280] uppercase sm:text-[11px]">Estructurado</span>
 			</div>
 		</div>
 		<div class="flex gap-[10px]">
 			<button
 				type="button"
-				class="rounded border border-white/[0.06] bg-transparent px-[14px] py-[6px] text-[11px] font-semibold tracking-[0.5px] uppercase text-[#6B7280] transition-all hover:border-white/[0.12] hover:text-white"
+				class="rounded border border-white/[0.06] bg-transparent px-3 py-1.5 text-[10px] font-semibold tracking-[0.5px] uppercase text-[#6B7280] transition-all hover:border-white/[0.12] hover:text-white sm:px-[14px] sm:py-[6px] sm:text-[11px]"
 				onclick={handleReset}
 			>
 				Limpiar
 			</button>
 			<button
 				type="button"
-				class="rounded border border-white/[0.06] bg-transparent px-[14px] py-[6px] text-[11px] font-semibold tracking-[0.5px] uppercase text-[#6B7280] transition-all hover:border-white/[0.12] hover:text-white"
+				class="rounded border border-white/[0.06] bg-transparent px-3 py-1.5 text-[10px] font-semibold tracking-[0.5px] uppercase text-[#6B7280] transition-all hover:border-white/[0.12] hover:text-white sm:px-[14px] sm:py-[6px] sm:text-[11px]"
 				onclick={handleSave}
 			>
 				Guardar
@@ -514,9 +514,9 @@ function findPrimaryTask(groups) {
 	</div>
 
 	<!-- Main grid -->
-	<div class="grid min-h-0 flex-1 grid-cols-2">
+	<div class="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-2">
 		<!-- Left: Input -->
-		<div class="overflow-y-auto border-r border-white/[0.04] bg-black/10 p-[25px]">
+		<div class="overflow-y-auto border-b border-white/[0.04] bg-black/10 p-4 sm:p-5 lg:border-b-0 lg:border-r lg:p-[25px]">
 			{#if isEditing || !textareaValue}
 				<textarea
 					bind:value={textareaValue}
@@ -525,7 +525,7 @@ function findPrimaryTask(groups) {
 
 Sin orden. Sin estructura. Sin filtros.
 Solo escribe."
-					class="h-full min-h-[380px] w-full rounded-lg border border-dashed border-white/[0.08] bg-transparent px-5 py-[20px] text-[14px] leading-[1.9] text-[#B0B8C4] outline-none resize-none font-sans"
+					class="h-full min-h-[250px] w-full rounded-lg border border-dashed border-white/[0.08] bg-transparent px-4 py-[15px] text-[13px] leading-[1.8] text-[#B0B8C4] outline-none resize-none font-sans sm:min-h-[380px] sm:px-5 sm:py-[20px] sm:text-[14px] sm:leading-[1.9]"
 				></textarea>
 			{:else}
 				<div
@@ -533,7 +533,7 @@ Solo escribe."
 					tabindex="0"
 					onclick={() => (isEditing = true)}
 					onkeydown={(e) => e.key === 'Enter' && (isEditing = true)}
-					class="prose prose-sm prose-invert h-full min-h-[380px] w-full cursor-text overflow-y-auto rounded-lg border border-white/[0.04] bg-white/[0.02] px-5 py-[20px]"
+					class="prose prose-sm prose-invert h-full min-h-[250px] w-full cursor-text overflow-y-auto rounded-lg border border-white/[0.04] bg-white/[0.02] px-4 py-[15px] sm:min-h-[380px] sm:px-5 sm:py-[20px]"
 				>
 					{@html renderedMarkdown}
 				</div>
@@ -541,88 +541,88 @@ Solo escribe."
 		</div>
 
 		<!-- Right: Structured output -->
-		<div class="overflow-y-auto bg-[#00D4FF]/[0.015] p-[25px]">
+		<div class="overflow-y-auto bg-[#00D4FF]/[0.015] p-4 sm:p-[25px]">
 			{#if currentStructuredData && currentStructuredData.length > 0}
-				<div class="mb-[18px] flex items-center justify-between">
+				<div class="mb-3 flex items-center justify-between sm:mb-[18px]">
 					<div class="flex items-center gap-2">
-						<div class="flex h-[22px] w-[22px] items-center justify-center rounded-lg bg-gradient-to-br from-[#00D4FF]/[0.2] to-[#00D4FF]/[0.05]">
-							<Check class="size-3" color="#00D4FF" stroke-width="2.5" aria-hidden="true" />
+						<div class="flex h-[20px] w-[20px] items-center justify-center rounded-lg bg-gradient-to-br from-[#00D4FF]/[0.2] to-[#00D4FF]/[0.05] sm:h-[22px] sm:w-[22px]">
+							<Check class="size-2.5 sm:size-3" color="#00D4FF" stroke-width="2.5" aria-hidden="true" />
 						</div>
-						<p class="text-[11px] font-semibold tracking-[2px] text-[#00D4FF] uppercase">Estructurado</p>
+						<p class="text-[10px] font-semibold tracking-[2px] text-[#00D4FF] uppercase sm:text-[11px]">Estructurado</p>
 					</div>
-					<p class="text-[10px] text-[#6B7280]">{currentStructuredData.length} grupos</p>
+					<p class="text-[9px] text-[#6B7280] sm:text-[10px]">{currentStructuredData.length} grupos</p>
 				</div>
 
 				<!-- Primary task - always visible at top -->
 				{#if primaryTask}
-					<div class="mb-4 rounded-lg border border-[#00D4FF]/[0.25] bg-gradient-to-br from-[#00D4FF]/[0.1] to-[#00D4FF]/[0.02] p-[16px_18px]">
-						<div class="mb-2 flex items-center gap-2">
-							<div class="h-2 w-2 rounded-full bg-[#00D4FF] shadow-[0_0_8px_rgba(0,212,255,0.5)]"></div>
-							<p class="text-[9px] font-extrabold tracking-[2px] text-[#00D4FF] uppercase">Empieza por aquí</p>
+					<div class="mb-3 rounded-lg border border-[#00D4FF]/[0.25] bg-gradient-to-br from-[#00D4FF]/[0.1] to-[#00D4FF]/[0.02] p-3 sm:mb-4 sm:p-[16px_18px]">
+						<div class="mb-1.5 flex flex-wrap items-center gap-2 sm:mb-2">
+							<div class="h-1.5 w-1.5 rounded-full bg-[#00D4FF] shadow-[0_0_8px_rgba(0,212,255,0.5)] sm:h-2 sm:w-2"></div>
+							<p class="text-[8px] font-extrabold tracking-[2px] text-[#00D4FF] uppercase sm:text-[9px]">Empieza por aquí</p>
 							{#if primaryTask.priority === 'urgente'}
-								<span class="rounded bg-red-500/20 px-2 py-[2px] text-[9px] font-bold text-red-400">URGENTE</span>
+								<span class="rounded bg-red-500/20 px-1.5 py-[2px] text-[8px] font-bold text-red-400 sm:px-2 sm:text-[9px]">URGENTE</span>
 							{:else if primaryTask.priority === 'importante'}
-								<span class="rounded bg-amber-500/20 px-2 py-[2px] text-[9px] font-bold text-amber-400">IMPORTANTE</span>
+								<span class="rounded bg-amber-500/20 px-1.5 py-[2px] text-[8px] font-bold text-amber-400 sm:px-2 sm:text-[9px]">IMPORTANTE</span>
 							{/if}
 						</div>
-						<p class="mb-1 text-[14px] font-semibold leading-[1.4] text-white">{primaryTask.title}</p>
+						<p class="mb-1 text-[13px] font-semibold leading-[1.4] text-white sm:text-[14px]">{primaryTask.title}</p>
 						{#if primaryTask.description}
-							<p class="text-[11px] text-[#9CA3AF]">{primaryTask.description}</p>
+							<p class="text-[10px] text-[#9CA3AF] sm:text-[11px]">{primaryTask.description}</p>
 						{/if}
-						<div class="mt-2 flex items-center gap-3">
+						<div class="mt-1.5 flex flex-wrap items-center gap-2 sm:mt-2 sm:gap-3">
 							{#if primaryTask.estimatedTime}
-								<p class="text-[10px] text-[#6B7280]">{primaryTask.estimatedTime}</p>
+								<p class="text-[9px] text-[#6B7280] sm:text-[10px]">{primaryTask.estimatedTime}</p>
 							{/if}
-							<p class="text-[10px] text-[#4B5563]">{primaryTask.groupName}</p>
+							<p class="text-[9px] text-[#4B5563] sm:text-[10px]">{primaryTask.groupName}</p>
 						</div>
 					</div>
 				{/if}
 
 				<!-- Groups list -->
-				<div class="flex flex-col gap-3">
+				<div class="flex flex-col gap-2 sm:gap-3">
 					{#each currentStructuredData as group (group.id)}
 						<!-- Collapsible group card -->
 						<div class="overflow-hidden rounded-lg border border-white/[0.06] bg-white/[0.02]">
 							<!-- Group header - clickable -->
 							<button
 								type="button"
-								class="flex w-full items-center justify-between px-4 py-3 transition-colors hover:bg-white/[0.02]"
+								class="flex w-full items-center justify-between px-3 py-2.5 transition-colors hover:bg-white/[0.02] sm:px-4 sm:py-3"
 								onclick={() => toggleGroup(group.id)}
 							>
 								<div class="flex items-center gap-2">
 									<!-- Group icon circle -->
 									<div
-										class="flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold"
+										class="flex h-6 w-6 items-center justify-center rounded-full text-[9px] font-bold sm:h-7 sm:w-7 sm:text-[10px]"
 										style="background: {getGroupBgColor(group.color)}; color: {getGroupTextColor(group.color)};"
 									>
 										{#if group.icon === 'briefcase'}
-											<Briefcase class="size-3.5" aria-hidden="true" />
+											<Briefcase class="size-3 sm:size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'user'}
-											<User class="size-3.5" aria-hidden="true" />
+											<User class="size-3 sm:size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'lightbulb'}
-											<Lightbulb class="size-3.5" aria-hidden="true" />
+											<Lightbulb class="size-3 sm:size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'heart'}
-											<Heart class="size-3.5" aria-hidden="true" />
+											<Heart class="size-3 sm:size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'dollar-sign'}
-											<DollarSign class="size-3.5" aria-hidden="true" />
+											<DollarSign class="size-3 sm:size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'book'}
-											<Book class="size-3.5" aria-hidden="true" />
+											<Book class="size-3 sm:size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'home'}
-											<Home class="size-3.5" aria-hidden="true" />
+											<Home class="size-3 sm:size-3.5" aria-hidden="true" />
 										{:else if group.icon === 'users'}
-											<Users class="size-3.5" aria-hidden="true" />
+											<Users class="size-3 sm:size-3.5" aria-hidden="true" />
 										{:else}
-											<Circle class="size-3.5" aria-hidden="true" />
+											<Circle class="size-3 sm:size-3.5" aria-hidden="true" />
 										{/if}
 									</div>
-									<h3 class="text-[14px] font-semibold text-white">{group.name}</h3>
+									<h3 class="text-[13px] font-semibold text-white sm:text-[14px]">{group.name}</h3>
 								</div>
-								<div class="flex items-center gap-2">
-									<span class="text-[10px] text-[#6B7280]">{countGroupTasks(group)} items</span>
+								<div class="flex items-center gap-1.5 sm:gap-2">
+									<span class="text-[9px] text-[#6B7280] sm:text-[10px]">{countGroupTasks(group)} items</span>
 									<!-- Chevron -->
 									<div class={expandedGroups.has(group.id) ? 'rotate-180' : ''}>
 										<ChevronDown
-											class="size-4 transition-transform duration-200"
+											class="size-3.5 transition-transform duration-200 sm:size-4"
 											color="#6B7280"
 											aria-hidden="true"
 										/>
@@ -632,69 +632,69 @@ Solo escribe."
 
 							<!-- Expandable content -->
 							{#if expandedGroups.has(group.id)}
-								<div class="border-t border-white/[0.05] px-4 pb-4 pt-3">
+								<div class="border-t border-white/[0.05] px-3 pb-3 pt-2.5 sm:px-4 sm:pb-4 sm:pt-3">
 									{#each group.subgroups as subgroup (subgroup.id)}
 										<!-- Subgroup header -->
-										<div class="mb-2 mt-1 flex items-center gap-2">
+										<div class="mb-1.5 mt-1 flex items-center gap-2 sm:mb-2 sm:mt-1">
 											{#if subgroup.type === 'tasks'}
-												<div class="h-[4px] w-[4px] rounded-full bg-[#00D4FF]"></div>
-												<p class="text-[10px] font-semibold tracking-[1px] text-[#00D4FF] uppercase">{subgroup.name}</p>
+												<div class="h-[3px] w-[3px] rounded-full bg-[#00D4FF] sm:h-[4px] sm:w-[4px]"></div>
+												<p class="text-[9px] font-semibold tracking-[1px] text-[#00D4FF] uppercase sm:text-[10px]">{subgroup.name}</p>
 											{:else}
-												<div class="h-[4px] w-[4px] rounded-full bg-[#A78BFA]"></div>
-												<p class="text-[10px] font-semibold tracking-[1px] text-[#A78BFA] uppercase">{subgroup.name}</p>
+												<div class="h-[3px] w-[3px] rounded-full bg-[#A78BFA] sm:h-[4px] sm:w-[4px]"></div>
+												<p class="text-[9px] font-semibold tracking-[1px] text-[#A78BFA] uppercase sm:text-[10px]">{subgroup.name}</p>
 											{/if}
 										</div>
 
 										<!-- Subgroup items -->
-										<div class="mb-3 flex flex-col gap-2">
+										<div class="mb-2 flex flex-col gap-1.5 sm:mb-3 sm:gap-2">
 											{#each subgroup.items as item (item.id)}
 												{#if subgroup.type === 'tasks'}
 													{#if item.isPrimary}
 														<!-- Primary task - skip (already shown at top) -->
-														<div class="flex items-start gap-3 rounded-lg border border-white/[0.05] bg-white/[0.02] border-l-[3px] border-l-[#00D4FF] p-[12px_14px] opacity-70">
-															<div class="mt-[5px] h-[6px] w-[6px] shrink-0 rounded-full bg-[#00D4FF]"></div>
+														<div class="flex items-start gap-2 rounded-lg border border-white/[0.05] bg-white/[0.02] border-l-[3px] border-l-[#00D4FF] p-2.5 sm:gap-3 sm:p-[12px_14px]">
+															<div class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00D4FF] sm:mt-[5px] sm:h-[6px] sm:w-[6px]"></div>
 															<div class="flex-1">
-																<p class="mb-1 text-[13px] font-medium text-[#D1D5DB]">{item.title}</p>
-																<p class="text-[10px] text-[#4B5563] italic">↑ Ya mostrada arriba</p>
+																<p class="mb-0.5 text-[12px] font-medium text-[#D1D5DB] sm:text-[13px]">{item.title}</p>
+																<p class="text-[9px] text-[#4B5563] italic sm:text-[10px]">↑ Ya mostrada arriba</p>
 															</div>
 														</div>
 													{:else}
 														<!-- Regular task -->
-														<div class="flex items-start gap-3 rounded-lg border border-white/[0.05] bg-white/[0.02] border-l-[3px] border-l-[#00D4FF] p-[12px_14px]">
-															<div class="mt-[5px] h-[6px] w-[6px] shrink-0 rounded-full bg-[#00D4FF]"></div>
+														<div class="flex items-start gap-2 rounded-lg border border-white/[0.05] bg-white/[0.02] border-l-[3px] border-l-[#00D4FF] p-2.5 sm:gap-3 sm:p-[12px_14px]">
+															<div class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00D4FF] sm:mt-[5px] sm:h-[6px] sm:w-[6px]"></div>
 															<div class="flex-1">
-																<div class="mb-1 flex items-center gap-2">
-																	<p class="text-[13px] font-medium text-[#D1D5DB]">{item.title}</p>
+																<div class="mb-0.5 flex flex-wrap items-center gap-1.5 sm:mb-1 sm:gap-2">
+																	<p class="text-[12px] font-medium text-[#D1D5DB] sm:text-[13px]">{item.title}</p>
 																	{#if item.priority === 'urgente'}
-																		<span class="rounded bg-red-500/20 px-1.5 py-[1px] text-[8px] font-bold text-red-400">URG</span>
+																		<span class="rounded bg-red-500/20 px-1 py-[1px] text-[7px] font-bold text-red-400 sm:px-1.5 sm:text-[8px]">URG</span>
 																	{:else if item.priority === 'importante'}
-																		<span class="rounded bg-amber-500/20 px-1.5 py-[1px] text-[8px] font-bold text-amber-400">IMP</span>
+																		<span class="rounded bg-amber-500/20 px-1 py-[1px] text-[7px] font-bold text-amber-400 sm:px-1.5 sm:text-[8px]">IMP</span>
 																	{:else if item.priority === 'baja'}
-																		<span class="rounded bg-gray-500/20 px-1.5 py-[1px] text-[8px] font-bold text-gray-400">LOW</span>
+																		<span class="rounded bg-gray-500/20 px-1 py-[1px] text-[7px] font-bold text-gray-400 sm:px-1.5 sm:text-[8px]">LOW</span>
 																	{/if}
 																</div>
 																{#if item.description}
-																	<p class="text-[10px] text-[#6B7280]">{item.description}</p>
+																	<p class="text-[9px] text-[#6B7280] sm:text-[10px]">{item.description}</p>
 																{/if}
 																{#if item.estimatedTime}
-																	<p class="mt-1 text-[10px] text-[#4B5563]">{item.estimatedTime}</p>
+																	<p class="mt-0.5 text-[9px] text-[#4B5563] sm:mt-1 sm:text-[10px]">{item.estimatedTime}</p>
 																{/if}
 															</div>
 														</div>
 													{/if}
 												{:else}
 													<!-- Note item -->
-													<div class="flex items-start gap-3 rounded-lg border border-[#A78BFA]/[0.08] bg-[#A78BFA]/[0.03] border-l-[3px] border-l-[#A78BFA] p-[12px_14px]">
-														<div class="mt-[5px] h-[6px] w-[6px] shrink-0 rounded-full bg-[#A78BFA]"></div>
+													<div class="flex items-start gap-2 rounded-lg border border-[#A78BFA]/[0.08] bg-[#A78BFA]/[0.03] border-l-[3px] border-l-[#A78BFA] p-2.5 sm:gap-3 sm:p-[12px_14px]">
+														<div class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#A78BFA] sm:mt-[5px] sm:h-[6px] sm:w-[6px]"></div>
 														<div class="flex-1">
-															<p class="mb-1 text-[13px] font-medium text-[#D1D5DB]">{item.title}</p>
+															<p class="mb-0.5 text-[12px] font-medium text-[#D1D5DB] sm:text-[13px]">{item.title}</p>
 															{#if item.description}
-																<p class="text-[10px] text-[#6B7280]">{item.description}</p>
+																<p class="text-[9px] text-[#6B7280] sm:text-[10px]">{item.description}</p>
 															{/if}
 															{#if item.tags && item.tags.length > 0}
-																<div class="mt-2 flex flex-wrap gap-1">
+																<div class="mt-1.5 flex flex-wrap gap-1 sm:mt-2">
 																	{#each item.tags as tag}
-																		<span class="rounded bg-[#A78BFA]/[0.15] px-2 py-[2px] text-[9px] font-medium text-[#A78BFA]">{tag}</span>
+																		<span class="rounded bg-[#A78BFA]/[0.15] px-1.5 py-[2px] text-[8px] font-medium text-[#A78BFA] sm:px-2 sm:text-[9px]">{tag}</span>
 																	{/each}
 																</div>
 															{/if}
@@ -718,7 +718,7 @@ Solo escribe."
 	</div>
 
 	<!-- Bottom bar -->
-	<div class="flex shrink-0 flex-col gap-3 border-t border-white/[0.04] bg-black/15 px-[30px] py-[18px]">
+	<div class="flex shrink-0 flex-col gap-3 border-t border-white/[0.04] bg-black/15 px-4 py-4 sm:flex-row sm:items-center sm:justify-center sm:gap-3 sm:px-[30px] sm:py-[18px]">
 		<!-- Error banner -->
 		{#if apiError}
 			<div class="flex items-start gap-3 rounded-lg border border-red-500/20 bg-red-500/10 p-3">
@@ -744,11 +744,11 @@ Solo escribe."
 			</div>
 		{/if}
 
-		<div class="flex items-center justify-center gap-3">
+		<div class="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-3">
 			<p class="text-[10px] italic text-[#4B5563]">Escribe a la izquierda. Estructura cuando quieras.</p>
 			<button
 				type="button"
-				class="ml-[10px] flex items-center gap-2 rounded bg-gradient-to-r from-[#00D4FF] to-[#00B8E6] px-9 py-[10px] text-[13px] font-bold tracking-[1px] uppercase text-[#0A0A0A] shadow-[0_0_25px_rgba(0,212,255,0.2)] transition-all hover:shadow-[0_0_35px_rgba(0,212,255,0.4)] disabled:cursor-not-allowed disabled:opacity-50"
+				class="flex w-full items-center justify-center gap-2 rounded bg-gradient-to-r from-[#00D4FF] to-[#00B8E6] px-6 py-[12px] text-[13px] font-bold tracking-[1px] uppercase text-[#0A0A0A] shadow-[0_0_25px_rgba(0,212,255,0.2)] transition-all hover:shadow-[0_0_35px_rgba(0,212,255,0.4)] disabled:cursor-not-allowed disabled:opacity-50 sm:ml-[10px] sm:w-auto sm:px-9 sm:py-[10px]"
 				onclick={handleStructure}
 				disabled={isProcessing || !textareaValue}
 			>

@@ -34,8 +34,8 @@ let {
 <Section
 	id="demo"
 	useDefaults={false}
-	className="bg-gradient-to-[160deg] from-[#0D0E15] via-[#111320] to-[#0E0F18] px-5 py-[100px]"
-	innerClass="relative z-1 mx-auto w-full"
+	className="bg-gradient-to-[160deg] from-[#0D0E15] via-[#111320] to-[#0E0F18] px-4 py-[50px] sm:px-5 sm:py-[100px]"
+	innerClass="relative z-1 mx-auto w-full max-w-[1400px]"
 >
 	<InputArea initialText={text} {currentText} {structuredData} />
 </Section>
