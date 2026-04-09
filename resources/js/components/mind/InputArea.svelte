@@ -305,7 +305,12 @@ let renderedMarkdown = $derived.by(() => {
 
 	const rawHtml = marked.parse(textareaValue);
 
-	return DOMPurify.sanitize(rawHtml);
+	// Only sanitize in browser environment (not during SSR)
+	if (typeof window !== 'undefined') {
+		return DOMPurify.sanitize(rawHtml);
+	}
+	
+	return rawHtml;
 });
 
 // Track which groups are expanded (all expanded by default)
