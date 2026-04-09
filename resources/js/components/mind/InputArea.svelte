@@ -482,9 +482,9 @@ function findPrimaryTask(groups) {
 }
 </script>
 
-<div class="flex min-h-[calc(100vh-73px)] w-full flex-col">
+<div class="flex h-full w-full flex-col">
 	<!-- Top bar -->
-	<div class="flex items-center justify-between border-b border-white/[0.04] bg-black/20 px-[30px] py-[15px]">
+	<div class="flex shrink-0 items-center justify-between border-b border-white/[0.04] bg-black/20 px-[30px] py-[15px]">
 		<div class="flex gap-[30px]">
 			<div class="flex items-center gap-2">
 				<div class="h-[6px] w-[6px] rounded-full bg-[#00D4FF]"></div>
@@ -514,9 +514,9 @@ function findPrimaryTask(groups) {
 	</div>
 
 	<!-- Main grid -->
-	<div class="grid min-h-[500px] flex-1 grid-cols-2">
+	<div class="grid min-h-0 flex-1 grid-cols-2">
 		<!-- Left: Input -->
-		<div class="border-r border-white/[0.04] bg-black/10 p-[25px]">
+		<div class="overflow-y-auto border-r border-white/[0.04] bg-black/10 p-[25px]">
 			{#if isEditing || !textareaValue}
 				<textarea
 					bind:value={textareaValue}
@@ -718,7 +718,7 @@ Solo escribe."
 	</div>
 
 	<!-- Bottom bar -->
-	<div class="flex flex-col gap-3 border-t border-white/[0.04] bg-black/15 px-[30px] py-[18px]">
+	<div class="flex shrink-0 flex-col gap-3 border-t border-white/[0.04] bg-black/15 px-[30px] py-[18px]">
 		<!-- Error banner -->
 		{#if apiError}
 			<div class="flex items-start gap-3 rounded-lg border border-red-500/20 bg-red-500/10 p-3">

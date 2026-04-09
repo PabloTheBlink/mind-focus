@@ -34,9 +34,10 @@ let {
 </script>
 
 <PageBackground>
-	<AppHeader />
-	<div class="relative z-1 mx-auto w-full">
-		<InputArea initialText={text} {currentText} {structuredData} />
+	<div class="fixed inset-0 flex h-[100dvh] flex-col">
+		<AppHeader />
+		<div class="relative z-1 flex min-h-0 flex-1 overflow-hidden">
+			<InputArea initialText={text} {currentText} {structuredData} />
+		</div>
 	</div>
-	<AppFooter />
 </PageBackground>
